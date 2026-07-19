@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Debt Capacity &amp; Cost of Capital Calculator — Cobalt Commercial Credit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#002347;
+    --cobalt:#0047AB;
+    --secondary:#1a4b8c;
+    --tertiary:#4a7fc4;
+    --bg:#f6f8fb;
+    --panel:#ffffff;
+    --line:#e2e8f0;
+    --text:#0f1e33;
+    --muted:#5b6b82;
+    --good:#0f7a4a;
+    --bad:#b3261e;
+    --warn:#a15c00;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1280px;margin:0 auto;padding:32px 24px 80px;}
+  header{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    border-bottom:1px solid var(--line);
+    padding-bottom:20px;
+    margin-bottom:28px;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .brand{
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:0.02em;
+    color:var(--navy);
+  }
+  .brand span{color:var(--cobalt);}
+  h1{
+    font-family:'Sora',sans-serif;
+    font-size:22px;
+    font-weight:600;
+    margin:0;
+    color:var(--navy);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:4px;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:22px 24px;
+    margin-bottom:20px;
+  }
+  .card h2{
+    font-family:'Sora',sans-serif;
+    font-size:15px;
+    font-weight:600;
+    color:var(--navy);
+    margin:0 0 16px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .grid{display:grid;gap:16px;}
+  .grid-3{grid-template-columns:repeat(3,1fr);}
+  .grid-4{grid-template-columns:repeat(4,1fr);}
+  .grid-2{grid-template-columns:repeat(2,1fr);}
+  @media(max-width:900px){.grid-3,.grid-4,.grid-2{grid-template-columns:1fr 1fr;}}
+  @media(max-width:600px){.grid-3,.grid-4,.grid-2{grid-template-columns:1fr;}}
+  .field label{
+    display:block;
+    font-size:11.5px;
+    font-weight:600;
+    color:var(--muted);
+    margin-bottom:5px;
+    letter-spacing:0.01em;
+  }
+  .field input[type=number], .field input[type=text], .field select{
+    width:100%;
+    padding:9px 10px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13.5px;
+    color:var(--text);
+    background:#fbfcfe;
+  }
+  .field select{font-family:'IBM Plex Sans',sans-serif;font-size:12.5px;cursor:pointer;}
+  .field input:focus, .field select:focus{outline:2px solid var(--tertiary);outline-offset:1px;}
+  .field .hint{font-size:10.5px;color:var(--muted);margin-top:3px;}
+  .checkbox-row{display:flex;align-items:center;gap:8px;padding:6px 0;}
+  .checkbox-row input{width:16px;height:16px;}
+  .checkbox-row label{font-size:12.5px;font-weight:600;color:var(--text);}
+
+  .tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
+  .tab-btn{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    padding:10px 16px;
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--muted);
+    border-radius:8px;
+    cursor:pointer;
+  }
+  .tab-btn.active{background:var(--cobalt);color:#fff;border-color:var(--cobalt);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  .stat{
+    background:linear-gradient(180deg,#f8fafc,#fff);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:16px 18px;
+  }
+  .stat .label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.04em;}
+  .stat .value{font-family:'Sora',sans-serif;font-size:24px;font-weight:700;color:var(--navy);margin-top:4px;}
+  .stat .value.big{font-size:30px;color:var(--cobalt);}
+  .stat .sub{font-size:11.5px;color:var(--muted);margin-top:2px;}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:0.04em;color:var(--muted);font-weight:600;}
+  td.num{font-family:'IBM Plex Mono',monospace;text-align:right;}
+  th.num{text-align:right;}
+  tr.highlight td{background:#eef4ff;font-weight:600;}
+
+  .flag{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:4px 10px;border-radius:100px;font-size:11.5px;font-weight:600;
+  }
+  .flag.ok{background:#e6f4ec;color:var(--good);}
+  .flag.warn{background:#fdf1e2;color:var(--warn);}
+  .flag.bad{background:#fbe9e7;color:var(--bad);}
+
+  .banner{
+    border-radius:8px;
+    padding:12px 16px;
+    font-size:13px;
+    margin-bottom:16px;
+    border:1px solid;
+  }
+  .banner.warn{background:#fdf6ea;border-color:#f0d9a8;color:var(--warn);}
+  .banner.bad{background:#fdeceb;border-color:#f3c2bd;color:var(--bad);}
+
+  .barchart .row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .barchart .row .name{width:140px;font-size:12px;font-weight:600;color:var(--text);flex-shrink:0;}
+  .barchart .row .track{flex:1;background:#eef1f5;border-radius:6px;height:26px;position:relative;overflow:hidden;}
+  .barchart .row .fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;}
+  .barchart .row .fill span{color:#fff;font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;}
+
+  details{border:1px solid var(--line);border-radius:10px;background:var(--panel);margin-bottom:20px;}
+  details summary{
+    cursor:pointer;
+    padding:16px 24px;
+    font-family:'Sora',sans-serif;
+    font-weight:600;
+    font-size:14.5px;
+    color:var(--navy);
+    list-style:none;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  details summary::-webkit-details-marker{display:none;}
+  details summary::after{content:'+';font-size:20px;color:var(--muted);}
+  details[open] summary::after{content:'–';}
+  details .details-body{padding:0 24px 22px;}
+
+  .footnote{font-size:11px;color:var(--muted);margin-top:14px;line-height:1.5;}
+  .instrument-conflict{font-size:12px;color:var(--bad);margin-top:8px;}
+
+  .header-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .prepared-for{display:flex;align-items:center;gap:6px;}
+  .prepared-for label{font-size:11px;color:var(--muted);font-weight:600;white-space:nowrap;}
+  .prepared-for input{
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:12.5px;
+    padding:6px 9px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    background:#fbfcfe;
+    width:190px;
+  }
+  #exportPdfBtn{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    padding:9px 16px;
+    border:1px solid var(--cobalt);
+    background:var(--cobalt);
+    color:#fff;
+    border-radius:8px;
+    cursor:pointer;
+  }
+  #exportPdfBtn:hover{background:var(--secondary);border-color:var(--secondary);}
+
+  .pdf-toggle-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+    font-size:11.5px;
+    color:var(--muted);
+    margin-bottom:18px;
+    padding:10px 14px;
+    background:#f4f7fb;
+    border:1px solid var(--line);
+    border-radius:8px;
+  }
+  .pdf-toggle-row .pdf-toggle-label{font-weight:600;color:var(--text);white-space:nowrap;}
+  .pdf-toggle-row .pdf-toggle-item{display:flex;align-items:center;gap:5px;}
+  .pdf-toggle-row .pdf-toggle-item input{width:14px;height:14px;}
+  .pdf-toggle-row .pdf-toggle-item label{font-size:12px;color:var(--text);font-weight:500;}
+
+  .print-only{display:none;}
+
+  @media print{
+    body{background:#fff;}
+    .wrap{max-width:100%;padding:0 8px;}
+    .tabs, #exportPdfBtn, .prepared-for input, .checkbox-row input, .header-actions .prepared-for label{}
+    .tabs{display:none !important;}
+    .header-actions{display:none !important;}
+    .pdf-toggle-row{display:none !important;}
+    .print-only{display:block;}
+    body.print-mode .tab-panel{display:block !important;}
+    body.print-mode .tab-panel.print-excluded{display:none !important;}
+    .card, .tab-panel, details{page-break-inside:avoid;break-inside:avoid;}
+    .tab-panel{margin-top:6px;padding-top:6px;border-top:2px solid var(--navy);}
+    .tab-panel::before{
+      content:attr(data-print-title);
+      display:block;
+      font-family:'Sora',sans-serif;
+      font-weight:700;
+      font-size:16px;
+      color:var(--navy);
+      margin:10px 0 12px;
+    }
+    input[type=number], input[type=text]{
+      border:none !important;
+      background:transparent !important;
+      padding:0 !important;
+      color:var(--text) !important;
+      font-weight:600;
+    }
+    .checkbox-row{padding:2px 0;}
+    details{border:none;}
+    details summary::after{display:none;}
+    details summary{padding:10px 0;}
+    .details-body{padding:0;}
+    a[href]::after{content:"";}
+  }
+  .authgate{ position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:500; padding:24px; }
+  .authcard{ background:var(--panel); border:1px solid var(--line); border-radius:10px; width:100%; max-width:380px; padding:28px 28px 24px;
+    box-shadow:0 8px 24px -12px rgba(15,30,51,0.2); }
+  .authcard h1{ font-family:'Sora',sans-serif; font-size:20px; margin:0 0 3px; color:var(--navy); }
+  .authcard p.sub{ font-size:12.5px; color:var(--muted); margin:0 0 20px; }
+  .authcard label{ display:block; font-size:12px; font-weight:600; margin-bottom:5px; margin-top:14px; color:var(--text); }
+  .authcard input{ width:100%; padding:9px 11px; border:1px solid var(--line); border-radius:6px; font-size:13.5px; font-family:'IBM Plex Sans',sans-serif; box-sizing:border-box; }
+  .authcard button{ width:100%; margin-top:18px; padding:10px; background:var(--cobalt); border:1px solid var(--cobalt);
+    color:#fff; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer; font-family:'IBM Plex Sans',sans-serif; }
+  .authcard button:hover{ background:var(--secondary); }
+  .authcard .err{ font-size:12.5px; color:var(--bad); margin-top:10px; display:none; }
+  .authcard .err.show{ display:block; }
+  .save-scenario-bar{ display:flex; align-items:center; gap:10px; justify-content:flex-end; margin-bottom:14px; flex-wrap:wrap; }
+  .save-scenario-bar .linked-tag{ font-size:11.5px; color:var(--good); background:#e6f4ec; padding:4px 10px; border-radius:100px; font-weight:600; }
+  .save-scenario-bar select{ padding:8px 10px; border:1px solid var(--line); border-radius:4px; font-family:'IBM Plex Sans',sans-serif; font-size:12px; cursor:pointer; }
+  .save-scenario-bar button{ background:var(--navy); color:#fff; border:none; border-radius:4px; padding:8px 14px;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.04em; text-transform:uppercase; cursor:pointer; }
+  .save-scenario-bar button:hover{ background:var(--secondary); }
+</style>
+</head>
+<body>
+<div class="authgate" id="authGate">
+  <div class="authcard">
+    <h1>Sign in</h1>
+    <p class="sub">Cobalt Debt Capacity Calculator — for the team only.</p>
+    <label>Email</label>
+    <input type="email" id="authEmail" autocomplete="username">
+    <label>Password</label>
+    <input type="password" id="authPassword" autocomplete="current-password">
+    <button id="authSubmit">Sign in</button>
+    <div class="err" id="authErr"></div>
+  </div>
+</div>
+<div id="mainApp" style="display:none;">
+<div class="wrap">
+
+  <header>
+    <div>
+      <svg viewBox="145 275 735 220" xmlns="http://www.w3.org/2000/svg" style="height:46px;width:auto;" role="img" aria-label="Cobalt Commercial Credit">
+        <polygon fill="#1a4b8c" points="242.74669 285.5804 256.15816 374.10946 327.42649 334.47028"/>
+        <polygon fill="#4a7fc4" points="329.32111 430.70878 329.32111 335.56417 258.07371 383.13647"/>
+        <polygon fill="#002347" points="154.63524 335.56417 154.63524 430.70878 225.88271 383.13647"/>
+        <polygon fill="#0047ab" points="227.7982 374.10946 241.20966 285.5804 156.52986 334.47028"/>
+        <polygon fill="#0047ab" points="227.7982 392.16349 155.13954 432.57591 241.4713 482.4196"/>
+        <polygon fill="#1a4b8c" points="256.15816 392.16349 242.48506 482.4196 328.81682 432.57591"/>
+        <g style="fill:#002347">
+          <path d="m 441.8149,347.11795 -8.78946,10.01303 c -4.78384,-5.34015 -11.68195,-9.34577 -20.36045,-9.34577 -16.4658,0 -27.48048,12.34973 -27.48048,29.59476 0,17.02261 11.01469,29.48329 27.48048,29.48329 9.01238,0 16.02146,-4.11658 20.8053,-9.79061 l 8.6785,10.23596 c -7.78831,8.56704 -17.69038,12.34973 -29.4838,12.34973 -24.2541,0 -41.6106,-18.13522 -41.6106,-42.27837 0,-24.36557 17.35649,-42.38933 41.6106,-42.38933 12.46119,0 21.47307,4.22753 29.14991,12.1273 z"/>
+          <path d="m 542.05568,377.37998 c 0,24.47703 -17.80134,42.27837 -41.6111,42.27837 -23.92022,0 -41.6106,-17.80134 -41.6106,-42.27837 0,-24.36557 17.69038,-42.38933 41.6106,-42.38933 23.80976,0 41.6111,18.02376 41.6111,42.38933 z m -69.09159,0 c 0,17.24503 11.34807,29.48329 27.48048,29.48329 16.02146,0 27.48099,-12.23826 27.48099,-29.48329 0,-17.24503 -11.45953,-29.59476 -27.48099,-29.59476 -16.13242,0 -27.48048,12.34973 -27.48048,29.59476 z"/>
+          <path d="m 623.38149,358.2436 c 0,8.56704 -4.56142,14.01865 -8.90042,16.4663 8.78946,2.67007 15.57611,8.45557 15.57611,20.13753 0,14.90884 -11.571,23.36441 -26.92468,23.36441 h -35.60268 v -81.77469 h 30.15106 c 16.4663,0 25.7006,8.34411 25.7006,21.80645 z m -42.05544,-9.12334 v 21.58403 h 15.35369 c 7.89926,0 12.68361,-4.44996 12.68361,-10.79176 0,-6.78665 -4.67288,-10.79227 -13.46234,-10.79227 z m 0,33.26648 v 23.14149 h 20.13753 c 8.90092,0 14.57496,-4.00511 14.57496,-11.57049 0,-7.45442 -5.34015,-11.571 -15.46464,-11.571 h -19.24784 z"/>
+          <path d="m 761.5581,405.86212 h 37.04867 v 12.34973 h -50.95636 v -81.77469 h 13.90769 v 69.42497 z"/>
+          <path d="m 869.36476,348.78688 h -27.70291 v 69.42497 h -13.90769 v -69.42497 h -27.70291 v -12.34973 h 69.3135 v 12.34973 z"/>
+        </g>
+        <polygon fill="#002347" points="686.35066 334.99065 685.90582 334.99065 647.41014 418.21184 662.54141 418.21184 686.12824 363.58375 709.71508 418.21184 724.84584 418.21184"/>
+        <polygon fill="#0047ab" points="675.65591 418.21184 686.12824 393.95749 696.60057 418.21184"/>
+        <g style="fill:#1a4b8c">
+          <path d="m 382.62256,442.73596 c 0.86963,-0.86963 1.89795,-1.54346 3.0874,-2.02197 1.18799,-0.47803 2.49268,-0.71729 3.91309,-0.71729 1.50684,0 2.90576,0.3042 4.19629,0.91309 1.28955,0.60889 2.44189,1.50781 3.45654,2.6958 l 4.56592,-4.17432 c -1.4502,-1.76758 -3.24707,-3.10889 -5.39209,-4.02197 -2.14551,-0.91309 -4.53711,-1.36963 -7.17432,-1.36963 -2.34814,0 -4.52979,0.38477 -6.54443,1.15234 -2.01514,0.76855 -3.76855,1.86279 -5.26123,3.28271 -1.49316,1.4209 -2.65234,3.0874 -3.47852,5.00049 -0.82617,1.91357 -1.23926,4.01562 -1.23926,6.30518 0,2.29004 0.41309,4.3916 1.23926,6.30469 0.82617,1.91357 1.97852,3.58057 3.45703,5.00049 1.47803,1.4209 3.22412,2.51514 5.23926,3.2832 2.01465,0.76758 4.19629,1.15234 6.54443,1.15234 2.6665,0 5.07227,-0.46436 7.21777,-1.3916 2.14502,-0.92725 3.94189,-2.27539 5.39209,-4.04395 l -4.56592,-4.17432 c -1.01465,1.18896 -2.16699,2.09473 -3.45654,2.71777 -1.29053,0.62354 -2.68945,0.93506 -4.19629,0.93506 -1.42041,0 -2.7251,-0.23926 -3.91309,-0.71777 -1.18945,-0.47803 -2.21777,-1.15234 -3.0874,-2.02197 -0.86963,-0.86963 -1.54395,-1.89795 -2.02197,-3.08691 -0.47852,-1.18848 -0.71729,-2.50732 -0.71729,-3.95703 0,-1.44922 0.23877,-2.76807 0.71729,-3.95703 0.47803,-1.18848 1.15234,-2.21777 2.02197,-3.0874 z"/>
+          <path d="m 431.45312,438.47473 c -1.50732,-1.41992 -3.26855,-2.51416 -5.2832,-3.28271 -2.01514,-0.76758 -4.2251,-1.15234 -6.63086,-1.15234 -2.40674,0 -4.6167,0.39111 -6.63086,1.17383 -2.01562,0.78271 -3.77637,1.88477 -5.2832,3.30469 -1.50781,1.4209 -2.67432,3.08057 -3.50049,4.979 -0.82617,1.89893 -1.23926,3.99365 -1.23926,6.2832 0,2.26123 0.41309,4.34814 1.23926,6.26123 0.82617,1.91357 1.99268,3.58057 3.50049,5.00049 1.50684,1.4209 3.27539,2.52197 5.30469,3.30469 2.02881,0.78271 4.24658,1.17432 6.65283,1.17432 2.37646,0 4.57227,-0.38477 6.5874,-1.15234 2.01465,-0.76807 3.77588,-1.8623 5.2832,-3.2832 1.50684,-1.41992 2.67432,-3.09375 3.50049,-5.02197 0.82617,-1.92773 1.23926,-4.02197 1.23926,-6.2832 0,-2.28955 -0.41309,-4.3916 -1.23926,-6.30518 -0.82617,-1.91309 -1.99365,-3.57959 -3.50049,-5.00049 z m -3.10888,15.24072 c -0.47852,1.17383 -1.15234,2.20312 -2.02197,3.0874 -0.86963,0.88428 -1.87744,1.56543 -3.02197,2.04346 -1.14551,0.47852 -2.39893,0.71777 -3.76123,0.71777 -1.36279,0 -2.62402,-0.23926 -3.7832,-0.71777 -1.15967,-0.47803 -2.16699,-1.15918 -3.02197,-2.04346 -0.85547,-0.88428 -1.52197,-1.91357 -2,-3.0874 -0.47852,-1.17383 -0.71729,-2.48535 -0.71729,-3.93506 0,-1.44922 0.23877,-2.76123 0.71729,-3.93506 0.47803,-1.17432 1.14453,-2.20264 2,-3.0874 0.85498,-0.88379 1.8623,-1.56543 3.02197,-2.04395 1.15918,-0.47803 2.42041,-0.71729 3.7832,-0.71729 1.3623,0 2.61572,0.23926 3.76123,0.71729 1.14453,0.47852 2.15234,1.16016 3.02197,2.04395 0.86963,0.88477 1.54346,1.91309 2.02197,3.0874 0.47852,1.17383 0.71729,2.48584 0.71729,3.93506 0,1.44971 -0.23877,2.76123 -0.71729,3.93506 z"/>
+          <path d="m 441.49756,434.56165 v 30.4375 h 6.56592 v -17.95252 l 8.95752,14.69129 h 3.13086 l 8.96624,-14.89313 0.0777,18.15436 h 6.56592 v -30.4375 h -5.87012 l -11.16882,18.89502 -11.39856,-18.89502 z"/>
+          <path d="m 483.02295,434.56165 v 30.4375 h 6.56592 v -17.95252 l 8.95752,14.69129 h 3.13086 l 8.96624,-14.89313 0.0777,18.15436 h 6.56592 v -30.4375 h -5.87012 l -11.16882,18.89502 -11.39856,-18.89502 z"/>
+          <path d="M 545.68164,446.77991 H 531.5498 v -6.56592 h 16.00147 v -5.65234 h -23.00244 v 30.4375 h 23.56738 v -5.65284 H 531.5498 v -7.04394 h 14.13184 z"/>
+          <path d="m 573.94482,455.19397 c 1.97119,-0.85498 3.49316,-2.10156 4.56592,-3.73975 1.07227,-1.63721 1.60889,-3.60156 1.60889,-5.8916 0,-3.42041 -1.17432,-6.10938 -3.52197,-8.06592 -2.34814,-1.95703 -5.63867,-2.93506 -9.87061,-2.93506 h -13.00146 v 30.4375 h 7.08789 v -8.52246 h 6.0874 c 0.10492,0 0.20007,-0.0111 0.30389,-0.0123 l 5.91388,8.53479 h 7.56641 l -6.78369,-9.78943 c 0.0138,-0.006 0.0297,-0.01 0.0435,-0.0157 z m -2.56543,-13.52295 c 1.10156,0.91309 1.65234,2.21045 1.65234,3.8916 0,1.68164 -0.55078,2.98584 -1.65234,3.91309 -1.10205,0.92822 -2.7251,1.3916 -4.86963,1.3916 h -5.69629 V 440.3009 h 5.69629 c 2.14453,0 3.76758,0.45703 4.86963,1.37012 z"/>
+          <path d="m 593.64258,442.73596 c 0.86963,-0.86963 1.89795,-1.54346 3.0874,-2.02197 1.18799,-0.47803 2.49268,-0.71729 3.91309,-0.71729 1.50684,0 2.90576,0.3042 4.19629,0.91309 1.28955,0.60889 2.44189,1.50781 3.45654,2.6958 l 4.56592,-4.17432 c -1.4502,-1.76758 -3.24707,-3.10889 -5.39209,-4.02197 -2.14551,-0.91309 -4.53711,-1.36963 -7.17432,-1.36963 -2.34814,0 -4.52979,0.38477 -6.54443,1.15234 -2.01514,0.76855 -3.76855,1.86279 -5.26123,3.28271 -1.49316,1.4209 -2.65234,3.0874 -3.47852,5.00049 -0.82617,1.91357 -1.23926,4.01562 -1.23926,6.30518 0,2.29004 0.41309,4.3916 1.23926,6.30469 0.82617,1.91357 1.97852,3.58057 3.45703,5.00049 1.47803,1.4209 3.22412,2.51514 5.23926,3.2832 2.01465,0.76758 4.19629,1.15234 6.54443,1.15234 2.6665,0 5.07227,-0.46436 7.21777,-1.3916 2.14502,-0.92725 3.94189,-2.27539 5.39209,-4.04395 l -4.56592,-4.17432 c -1.01465,1.18896 -2.16699,2.09473 -3.45654,2.71777 -1.29053,0.62354 -2.68945,0.93506 -4.19629,0.93506 -1.42041,0 -2.7251,-0.23926 -3.91309,-0.71777 -1.18945,-0.47803 -2.21777,-1.15234 -3.0874,-2.02197 -0.86963,-0.86963 -1.54395,-1.89795 -2.02197,-3.08691 -0.47852,-1.18848 -0.71729,-2.50732 -0.71729,-3.95703 0,-1.44922 0.23877,-2.76807 0.71729,-3.95703 0.47803,-1.18848 1.15234,-2.21777 2.02197,-3.0874 z"/>
+          <path d="m 617.1665,434.56165 h 7.08789 v 30.4375 h -7.08789 z"/>
+          <path d="m 640.95166,434.56165 -13.52295,30.4375 h 7.21777 l 2.71252,-6.52246 h 14.09851 l 2.7124,6.52246 h 7.39209 l -13.65332,-30.4375 h -6.95703 z m -1.36853,18.56689 4.82526,-11.60291 4.82513,11.60291 z"/>
+          <path d="m 664.73633,464.99915 h 22.26318 v -5.73975 h -15.17529 v -24.69775 h -7.08789 z"/>
+          <path d="m 711.2627,442.73596 c 0.86963,-0.86963 1.89795,-1.54346 3.0874,-2.02197 1.18799,-0.47803 2.49268,-0.71729 3.91309,-0.71729 1.50684,0 2.90576,0.3042 4.19629,0.91309 1.28955,0.60889 2.44189,1.50781 3.45654,2.6958 l 4.56592,-4.17432 c -1.4502,-1.76758 -3.24707,-3.10889 -5.39209,-4.02197 -2.14551,-0.91309 -4.53711,-1.36963 -7.17432,-1.36963 -2.34814,0 -4.52979,0.38477 -6.54443,1.15234 -2.01514,0.76855 -3.76855,1.86279 -5.26123,3.28271 -1.49316,1.4209 -2.65234,3.0874 -3.47852,5.00049 -0.82617,1.91357 -1.23926,4.01562 -1.23926,6.30518 0,2.29004 0.41309,4.3916 1.23926,6.30469 0.82617,1.91357 1.97852,3.58057 3.45703,5.00049 1.47803,1.4209 3.22412,2.51514 5.23926,3.2832 2.01465,0.76758 4.19629,1.15234 6.54443,1.15234 2.6665,0 5.07227,-0.46436 7.21777,-1.3916 2.14502,-0.92725 3.94189,-2.27539 5.39209,-4.04395 l -4.56592,-4.17432 c -1.01465,1.18896 -2.16699,2.09473 -3.45654,2.71777 -1.29053,0.62354 -2.68945,0.93506 -4.19629,0.93506 -1.42041,0 -2.7251,-0.23926 -3.91309,-0.71777 -1.18945,-0.47803 -2.21777,-1.15234 -3.0874,-2.02197 -0.86963,-0.86963 -1.54395,-1.89795 -2.02197,-3.08691 -0.47852,-1.18848 -0.71729,-2.50732 -0.71729,-3.95703 0,-1.44922 0.23877,-2.76807 0.71729,-3.95703 0.47803,-1.18848 1.15234,-2.21777 2.02197,-3.0874 z"/>
+          <path d="m 755.00537,455.19397 c 1.97119,-0.85498 3.49316,-2.10156 4.56592,-3.73975 1.07227,-1.63721 1.60889,-3.60156 1.60889,-5.8916 0,-3.42041 -1.17432,-6.10938 -3.52197,-8.06592 -2.34814,-1.95703 -5.63867,-2.93506 -9.87061,-2.93506 h -13.00146 v 30.4375 h 7.08789 v -8.52246 h 6.0874 c 0.10492,0 0.20007,-0.0111 0.30389,-0.0123 l 5.91388,8.53479 h 7.56641 l -6.78369,-9.78943 c 0.0139,-0.006 0.0297,-0.01 0.0435,-0.0157 z m -2.56543,-13.52295 c 1.10156,0.91309 1.65234,2.21045 1.65234,3.8916 0,1.68164 -0.55078,2.98584 -1.65234,3.91309 -1.10205,0.92822 -2.7251,1.3916 -4.86963,1.3916 h -5.69629 V 440.3009 h 5.69629 c 2.14453,0 3.76758,0.45703 4.86963,1.37012 z"/>
+          <path d="m 787.87842,446.77991 h -14.13184 v -6.56592 h 16.00147 v -5.65234 h -23.00244 v 30.4375 h 23.56738 v -5.65284 h -16.56641 v -7.04394 h 14.13184 z"/>
+          <path d="m 818.48975,436.45276 c -2.52197,-1.26074 -5.43506,-1.89111 -8.73975,-1.89111 h -13.82764 v 30.4375 H 809.75 c 3.30469,0 6.21777,-0.63037 8.73975,-1.8916 2.52197,-1.26074 4.49316,-3.02881 5.91357,-5.30469 1.41992,-2.27539 2.13086,-4.94971 2.13086,-8.02246 0,-3.07227 -0.71094,-5.74658 -2.13086,-8.02246 -1.42041,-2.27539 -3.3916,-4.04395 -5.91357,-5.30518 z m -0.32618,18.34961 c -0.82617,1.43506 -1.98584,2.53711 -3.47852,3.30469 -1.49316,0.76855 -3.25439,1.15234 -5.2832,1.15234 h -6.3916 v -18.9585 h 6.3916 c 2.02881,0 3.79004,0.38477 5.2832,1.15234 1.49268,0.76855 2.65234,1.86328 3.47852,3.2832 0.82617,1.42041 1.23926,3.10205 1.23926,5.04395 0,1.91309 -0.41309,3.5874 -1.23926,5.02197 z"/>
+          <path d="m 831.83887,434.56165 h 7.08789 v 30.4375 h -7.08789 z"/>
+          <path d="m 852.40625,440.3009 v 24.69825 h 7.04395 V 440.3009 h 9.74023 v -5.73925 h -26.52441 v 5.73925 z"/>
+        </g>
+        
+      </svg>
+    </div>
+    <div style="text-align:right;">
+      <div class="eyebrow">Capital Analysis</div>
+      <h1>Debt Capacity &amp; Cost of Capital Calculator</h1>
+    </div>
+  </header>
+
+  <div class="save-scenario-bar" id="saveScenarioBar">
+    <span class="linked-tag" id="linkedTag" style="display:none;"></span>
+    <select id="toolSwitcher">
+      <option value="">Switch tool…</option>
+      <option value="https://cobaltcommercialcredit.github.io/cobalt-hub/">🏠 Cobalt Terminal</option>
+      <option value="https://cobaltcommercialcredit.github.io/cobalt-prospect-engine/">Cobalt CRE Prospecting</option>
+      <option value="https://cobaltcommercialcredit.github.io/cobalt-debt-deals/">Cobalt Credit Prospecting</option>
+      <option value="https://cobaltcommercialcredit.github.io/cobalt-slb-calculator/">SLB Calculator</option>
+      <option value="https://cobaltcommercialcredit.github.io/cobalt-treasury-audit/">Treasury Firepower Audit</option>
+      <option value="https://cobaltcommercialcredit.github.io/cobalt-referral-partners/">Referral Partner Tracker</option>
+      <option value="https://cobaltcommercialcredit.github.io/cobalt-bank-matrix/">Bank Matrix</option>
+    </select>
+    <button id="saveScenarioBtn">Save this scenario</button>
+  </div>
+
+  <div class="header-actions" style="justify-content:space-between;margin-bottom:12px;">
+    <div style="display:flex;gap:18px;flex-wrap:wrap;">
+      <div class="prepared-for">
+        <label for="preparedFor">Prepared for</label>
+        <input type="text" id="preparedFor" placeholder="Company / deal name">
+      </div>
+      <div class="prepared-for">
+        <label for="preparedBy">Prepared by</label>
+        <input type="text" id="preparedBy" placeholder="Curtis Hollowell" value="">
+      </div>
+    </div>
+    <button id="exportPdfBtn">Export PDF</button>
+  </div>
+  <div id="screenSubline" style="font-size:12.5px;color:var(--muted);margin-bottom:12px;"></div>
+
+  <div class="pdf-toggle-row">
+    <span class="pdf-toggle-label">Include in PDF:</span>
+    <div class="pdf-toggle-item"><input type="checkbox" id="pdfInc-overview" data-panel="panel-overview" checked><label for="pdfInc-overview">Overview</label></div>
+    <div class="pdf-toggle-item"><input type="checkbox" id="pdfInc-abl" data-panel="panel-abl" checked><label for="pdfInc-abl">ABL</label></div>
+    <div class="pdf-toggle-item"><input type="checkbox" id="pdfInc-revolver" data-panel="panel-revolver" checked><label for="pdfInc-revolver">Revolver/LOC</label></div>
+    <div class="pdf-toggle-item"><input type="checkbox" id="pdfInc-factoring" data-panel="panel-factoring" checked><label for="pdfInc-factoring">Factoring</label></div>
+    <div class="pdf-toggle-item"><input type="checkbox" id="pdfInc-equipment" data-panel="panel-equipment" checked><label for="pdfInc-equipment">Equipment Finance</label></div>
+    <div class="pdf-toggle-item"><input type="checkbox" id="pdfInc-term" data-panel="panel-term" checked><label for="pdfInc-term">Term Loan</label></div>
+    <div class="pdf-toggle-item"><input type="checkbox" id="pdfInc-cre" data-panel="panel-cre" checked><label for="pdfInc-cre">CRE Loan</label></div>
+    <div class="pdf-toggle-item"><input type="checkbox" id="pdfInc-stack" data-panel="panel-stack" checked><label for="pdfInc-stack">Capital Stack</label></div>
+  </div>
+
+  <div class="print-only">
+    <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:20px;color:var(--navy);">Debt Capacity &amp; Cost of Capital Summary</div>
+    <div style="font-size:12px;color:var(--muted);margin-top:2px;" id="printSubline">Cobalt Commercial Credit</div>
+  </div>
+
+  <div class="card">
+    <h2>Company Profile <span style="font-weight:400;font-size:12px;color:var(--muted);">— shared across every instrument below</span></h2>
+    <div class="grid grid-4">
+      <div class="field">
+        <label>Trailing 12-Mo EBITDA</label>
+        <input type="number" id="ebitda" value="3000000" step="50000">
+      </div>
+      <div class="field">
+        <label>Total AR Balance</label>
+        <input type="number" id="arBalance" value="2500000" step="50000">
+      </div>
+      <div class="field">
+        <label>AR Days Sales Outstanding</label>
+        <input type="number" id="arDSO" value="48" step="1">
+        <div class="hint">Avg. days invoices stay outstanding</div>
+      </div>
+      <div class="field">
+        <label>Total Inventory (at cost)</label>
+        <input type="number" id="inventoryBalance" value="1800000" step="50000">
+      </div>
+      <div class="field">
+        <label>Equipment / Machinery Value</label>
+        <input type="number" id="equipmentValue" value="1200000" step="50000">
+        <div class="hint">Orderly liquidation value or invoice cost</div>
+      </div>
+      <div class="field">
+        <label>Existing Senior Debt (to refinance)</label>
+        <input type="number" id="existingSeniorDebt" value="0" step="25000">
+      </div>
+      <div class="field">
+        <label>Base Rate (SOFR)</label>
+        <input type="number" id="baseRate" value="4.3" step="0.05">
+        <div class="hint">% — update as market moves</div>
+      </div>
+      <div class="field">
+        <label>Owned Commercial Real Estate Value</label>
+        <input type="number" id="propertyValue" value="4500000" step="50000">
+        <div class="hint">Appraised / stated value, if applicable</div>
+      </div>
+      <div class="field">
+        <label>Property Net Operating Income (NOI)</label>
+        <input type="number" id="propertyNOI" value="450000" step="10000">
+        <div class="hint">Rental/owner income less operating expenses</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabButtons">
+    <button class="tab-btn active" data-tab="overview">Overview</button>
+    <button class="tab-btn" data-tab="abl">ABL</button>
+    <button class="tab-btn" data-tab="revolver">Revolver / LOC</button>
+    <button class="tab-btn" data-tab="factoring">Factoring</button>
+    <button class="tab-btn" data-tab="equipment">Equipment Finance</button>
+    <button class="tab-btn" data-tab="term">Term Loan</button>
+    <button class="tab-btn" data-tab="cre">CRE Loan</button>
+    <button class="tab-btn" data-tab="stack">Capital Stack</button>
+  </div>
+
+  <!-- Overview / Comparison -->
+  <div class="tab-panel active" id="panel-overview" data-print-title="Overview">
+    <div class="card">
+      <h2>What This Profile Supports <span style="font-weight:400;font-size:12px;color:var(--muted);">— all four instruments, based on the financials above</span></h2>
+      <div class="grid grid-2" style="margin-bottom:18px;">
+        <div class="stat"><div class="label">Most Availability</div><div class="value big" id="snapMaxAvailName">–</div><div class="sub" id="snapMaxAvailAmt"></div></div>
+        <div class="stat"><div class="label">Lowest Effective Cost</div><div class="value big" id="snapMinCostName">–</div><div class="sub" id="snapMinCostRate"></div></div>
+      </div>
+      <div class="barchart" id="compareBarChart"></div>
+      <table style="margin-top:14px;">
+        <tr><th>Instrument</th><th class="num">Availability</th><th class="num">Annual Cost</th><th class="num">Effective Rate</th></tr>
+        <tbody id="compareTableBody"></tbody>
+      </table>
+      <div class="footnote">Effective rate is the annualized all-in cost of capital — interest, fees, and (where applicable) amortized origination costs divided by average capital deployed. This is the number to quote a client, not the headline rate, since quoted rates on factoring in particular understate true cost. These two callouts are objective reads of the numbers, not a structuring recommendation — availability and cost are only two of the factors that decide the right instrument.</div>
+    </div>
+
+    <div class="card">
+      <h2>Sensitivity <span style="font-weight:400;font-size:12px;color:var(--muted);">— how the numbers move if pricing or underwriting shifts</span></h2>
+      <div class="grid grid-2">
+        <div>
+          <h3 style="font-family:'Sora',sans-serif;font-size:13.5px;color:var(--navy);margin:0 0 10px;">Cost of Capital Range</h3>
+          <table>
+            <tr><th>Instrument</th><th class="num">Downside</th><th class="num">Base Case</th><th class="num">Upside</th></tr>
+            <tbody id="sensCostBody"></tbody>
+          </table>
+          <div class="footnote">Downside/upside = ±100bps on SOFR (ABL, Equipment, Term Loan) or ±0.25pt on the factor fee (Factoring).</div>
+        </div>
+        <div>
+          <h3 style="font-family:'Sora',sans-serif;font-size:13.5px;color:var(--navy);margin:0 0 10px;">Availability Range</h3>
+          <table>
+            <tr><th>Instrument</th><th class="num">Downside</th><th class="num">Base Case</th><th class="num">Upside</th></tr>
+            <tbody id="sensAvailBody"></tbody>
+          </table>
+          <div class="footnote">Downside/upside = ±5pts on advance rate (ABL, Factoring, Equipment) or ±0.5x on leverage multiple (Term Loan) — simulating tighter or looser underwriting at term sheet.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABL -->
+  <div class="tab-panel" id="panel-abl" data-print-title="Asset-Based Line (ABL)">
+    <div class="card">
+      <h2>ABL — Results</h2>
+      <div class="grid grid-3">
+        <div class="stat"><div class="label">Net Availability</div><div class="value big" id="ablNetAvail">–</div><div class="sub" id="ablNetAvailSub"></div></div>
+        <div class="stat"><div class="label">All-In Rate</div><div class="value" id="ablAllInRate">–</div><div class="sub">SOFR + spread</div></div>
+        <div class="stat"><div class="label">Effective Cost of Capital</div><div class="value" id="ablEffCost">–</div><div class="sub">Total annual cost ÷ avg. outstanding</div></div>
+      </div>
+      <table style="margin-top:18px;">
+        <tr><th>Component</th><th class="num">Amount</th></tr>
+        <tr><td>Eligible AR availability</td><td class="num" id="ablArAvail">–</td></tr>
+        <tr><td>Eligible inventory availability</td><td class="num" id="ablInvAvail">–</td></tr>
+        <tr><td>Equipment sublimit availability</td><td class="num" id="ablEquipAvail">–</td></tr>
+        <tr><td>Gross availability</td><td class="num" id="ablGrossAvail">–</td></tr>
+        <tr><td>Less: reserves</td><td class="num" id="ablReserves">–</td></tr>
+        <tr><td>Less: existing senior debt refinanced</td><td class="num" id="ablLessDebt">–</td></tr>
+        <tr class="highlight"><td>Net availability</td><td class="num" id="ablNetAvail2">–</td></tr>
+        <tr><td>Annual interest (on avg. outstanding)</td><td class="num" id="ablInterest">–</td></tr>
+        <tr><td>Unused line fee</td><td class="num" id="ablUnusedFeeAmt">–</td></tr>
+        <tr><td>Monitoring / audit fees</td><td class="num" id="ablMonitoringFeeAmt">–</td></tr>
+        <tr><td>Amortized closing fee</td><td class="num" id="ablClosingFeeAmt">–</td></tr>
+        <tr class="highlight"><td>Total annual cost</td><td class="num" id="ablTotalCost">–</td></tr>
+      </table>
+    </div>
+
+    <details>
+      <summary>Adjust Assumptions</summary>
+      <div class="details-body">
+        <div class="grid grid-4">
+          <div class="field"><label>AR Ineligible %</label><input type="number" id="ablArIneligible" value="10" step="1"><div class="hint">&gt;90 days, concentration, foreign, gov't</div></div>
+          <div class="field"><label>AR Advance Rate %</label><input type="number" id="ablArAdvance" value="85" step="1"></div>
+          <div class="field"><label>Inventory Eligible %</label><input type="number" id="ablInvEligiblePct" value="60" step="1"><div class="hint">Excludes WIP typically</div></div>
+          <div class="field"><label>Inventory Advance Rate %</label><input type="number" id="ablInvAdvance" value="50" step="1"><div class="hint">Of eligible inventory / NOLV</div></div>
+          <div class="field"><label>Pricing Spread over SOFR %</label><input type="number" id="ablSpread" value="2.75" step="0.05"></div>
+          <div class="field"><label>Unused Line Fee %</label><input type="number" id="ablUnusedFee" value="0.375" step="0.025"></div>
+          <div class="field"><label>Expected Avg. Utilization %</label><input type="number" id="ablUtilization" value="70" step="5"></div>
+          <div class="field"><label>Annual Monitoring / Audit Fees</label><input type="number" id="ablMonitoringFee" value="12000" step="1000"></div>
+          <div class="field"><label>Closing Fee % (amortized 3yr)</label><input type="number" id="ablClosingFee" value="1.0" step="0.1"></div>
+          <div class="field"><label>Dilution Reserve % (of AR avail.)</label><input type="number" id="ablDilutionReserve" value="5" step="1"></div>
+          <div class="field"><label>Landlord / Other Reserve $</label><input type="number" id="ablLandlordReserve" value="0" step="5000"></div>
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="ablIncludeEquip">
+          <label for="ablIncludeEquip">Include equipment sublimit in borrowing base</label>
+        </div>
+        <div class="grid grid-3" id="ablEquipRow" style="display:none;margin-top:8px;">
+          <div class="field"><label>Equipment Advance Rate % (of OLV)</label><input type="number" id="ablEquipAdvance" value="70" step="5"></div>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <!-- Revolver / LOC -->
+  <div class="tab-panel" id="panel-revolver" data-print-title="Revolver / Line of Credit">
+    <div class="card">
+      <h2>Revolver / LOC — Results</h2>
+      <div class="grid grid-3">
+        <div class="stat"><div class="label">Facility Size</div><div class="value big" id="revFacility">–</div><div class="sub" id="revFacilitySub"></div></div>
+        <div class="stat"><div class="label">All-In Rate</div><div class="value" id="revAllInRate">–</div><div class="sub">SOFR + spread</div></div>
+        <div class="stat"><div class="label">Effective Cost of Capital</div><div class="value" id="revEffCost">–</div></div>
+      </div>
+      <table style="margin-top:18px;">
+        <tr><th>Component</th><th class="num">Amount</th></tr>
+        <tr><td>Facility size</td><td class="num" id="revFacilityAmt">–</td></tr>
+        <tr><td>Annual interest (on avg. outstanding)</td><td class="num" id="revInterest">–</td></tr>
+        <tr><td>Unused line fee</td><td class="num" id="revUnusedFeeAmt">–</td></tr>
+        <tr><td>Annual renewal / facility fee</td><td class="num" id="revRenewalFee">–</td></tr>
+        <tr class="highlight"><td>Total annual cost</td><td class="num" id="revTotalCost">–</td></tr>
+        <tr><td>Fixed Charge Coverage Ratio (FCCR)</td><td class="num" id="revFCCR">–</td></tr>
+      </table>
+      <div class="sub" id="revFCCRFlag" style="margin-top:8px;"></div>
+    </div>
+
+    <details>
+      <summary>Adjust Assumptions</summary>
+      <div class="details-body">
+        <div class="grid grid-3">
+          <div class="field">
+            <label>Sizing Method</label>
+            <select id="revSizingMethod">
+              <option value="ebitda" selected>EBITDA Multiple</option>
+              <option value="fixed">Fixed Facility Amount</option>
+            </select>
+            <div class="hint">Relationship/cash-flow based — no borrowing base certificate</div>
+          </div>
+          <div class="field" id="revMultipleField"><label>Facility Multiple (x EBITDA)</label><input type="number" id="revMultiple" value="0.75" step="0.05"></div>
+          <div class="field" id="revFixedField" style="display:none;"><label>Fixed Facility Amount</label><input type="number" id="revFixedAmt" value="1000000" step="50000"></div>
+          <div class="field"><label>Pricing Spread over SOFR %</label><input type="number" id="revSpread" value="2.25" step="0.05"></div>
+          <div class="field"><label>Unused Line Fee %</label><input type="number" id="revUnusedFee" value="0.25" step="0.05"></div>
+          <div class="field"><label>Expected Avg. Utilization %</label><input type="number" id="revUtilization" value="50" step="5"><div class="hint">Revolvers/LOCs typically run lower utilization than ABL</div></div>
+          <div class="field"><label>Annual Renewal / Facility Fee</label><input type="number" id="revRenewalFeeInput" value="2500" step="500"></div>
+          <div class="field"><label>FCCR Covenant Minimum</label><input type="number" id="revFCCRCovenant" value="1.10" step="0.05"></div>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <!-- Factoring -->
+  <div class="tab-panel" id="panel-factoring" data-print-title="Factoring">
+    <div class="card">
+      <h2>Factoring — Results</h2>
+      <div class="grid grid-3">
+        <div class="stat"><div class="label">Facility Availability</div><div class="value big" id="factAvail">–</div></div>
+        <div class="stat"><div class="label">Quoted Fee (looks like)</div><div class="value" id="factQuoted">–</div><div class="sub">per 30-day cycle</div></div>
+        <div class="stat"><div class="label">Effective Annualized Cost</div><div class="value" id="factEffCost">–</div><div class="sub">what it actually costs</div></div>
+      </div>
+      <div class="banner warn" style="margin-top:16px;" id="factGapBanner"></div>
+      <table>
+        <tr><th>Component</th><th class="num">Amount</th></tr>
+        <tr><td>Eligible AR</td><td class="num" id="factEligibleAR">–</td></tr>
+        <tr><td>Availability at advance rate</td><td class="num" id="factAvail2">–</td></tr>
+        <tr><td>Annualized factoring fee cost</td><td class="num" id="factFeeCost">–</td></tr>
+        <tr><td>Additional fees</td><td class="num" id="factAddlFeesRow">–</td></tr>
+        <tr class="highlight"><td>Total annual cost</td><td class="num" id="factTotalCost">–</td></tr>
+      </table>
+    </div>
+
+    <details>
+      <summary>Adjust Assumptions</summary>
+      <div class="details-body">
+        <div class="grid grid-4">
+          <div class="field"><label>AR Ineligible %</label><input type="number" id="factArIneligible" value="5" step="1"></div>
+          <div class="field"><label>Advance Rate %</label><input type="number" id="factAdvance" value="85" step="1"></div>
+          <div class="field"><label>Factor Fee % per 30 days</label><input type="number" id="factMonthlyFee" value="1.5" step="0.1"></div>
+          <div class="field"><label>Additional Annual Fees</label><input type="number" id="factAddlFees" value="6000" step="1000"><div class="hint">Due diligence, wire, minimum volume</div></div>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <!-- Equipment Finance -->
+  <div class="tab-panel" id="panel-equipment" data-print-title="Equipment Finance">
+    <div class="card">
+      <h2>Equipment Finance — Results</h2>
+      <div class="grid grid-3">
+        <div class="stat"><div class="label">Loan / Lease Amount</div><div class="value big" id="eqLoanAmt">–</div></div>
+        <div class="stat"><div class="label">Monthly Payment</div><div class="value" id="eqPayment">–</div></div>
+        <div class="stat"><div class="label">Effective Cost of Capital (Yr 1)</div><div class="value" id="eqEffCost">–</div></div>
+      </div>
+      <table>
+        <tr><th>Component</th><th class="num">Amount</th></tr>
+        <tr><td>Equipment value (<span id="eqBasisLabelInline">FMV</span>)</td><td class="num" id="eqCollateralValue">–</td></tr>
+        <tr><td>Advance rate applied</td><td class="num" id="eqAdvanceApplied">–</td></tr>
+        <tr><td>Loan amount</td><td class="num" id="eqLoanAmt2">–</td></tr>
+        <tr><td>Annual debt service</td><td class="num" id="eqAnnualDS">–</td></tr>
+        <tr><td>Year 1 interest</td><td class="num" id="eqYr1Interest">–</td></tr>
+        <tr><td>Amortized origination fee</td><td class="num" id="eqOrigFeeAmt">–</td></tr>
+        <tr class="highlight"><td>Total annual cost (Yr 1)</td><td class="num" id="eqTotalCost">–</td></tr>
+      </table>
+      <div class="banner warn" id="eqTermBanner" style="display:none;margin-top:14px;"></div>
+    </div>
+
+    <details>
+      <summary>Adjust Assumptions</summary>
+      <div class="details-body">
+        <div class="grid grid-3">
+          <div class="field">
+            <label>Equipment Category</label>
+            <select id="eqCategory">
+              <option value="new" data-advance="95">New — standard/titled (trucks, forklifts, standard machine tools)</option>
+              <option value="used" data-advance="80" selected>Used — standard, active resale market</option>
+              <option value="specialized" data-advance="50">Specialized / installed / custom — harder to remarket</option>
+              <option value="manual" data-advance="">Manual override (set advance rate directly)</option>
+            </select>
+            <div class="hint" id="eqCategoryHint"></div>
+          </div>
+          <div class="field">
+            <label>Valuation Basis</label>
+            <select id="eqValuationBasis">
+              <option value="FMV">FMV — Fair Market Value</option>
+              <option value="OLV" selected>OLV — Orderly Liquidation Value</option>
+              <option value="FLV">FLV — Forced Liquidation Value</option>
+            </select>
+            <div class="hint" id="eqBasisHint"></div>
+          </div>
+          <div class="field">
+            <label>Remaining Useful Life (years)</label>
+            <input type="number" id="eqUsefulLife" value="8" step="1">
+            <div class="hint">Term shouldn't exceed this — no lender wants to be secured by scrap</div>
+          </div>
+          <div class="field"><label>Advance Rate % (of stated value)</label><input type="number" id="eqAdvance" value="80" step="1"></div>
+          <div class="field"><label>Pricing Spread over SOFR %</label><input type="number" id="eqSpread" value="3.25" step="0.05"></div>
+          <div class="field"><label>Term (months)</label><input type="number" id="eqTerm" value="60" step="6"></div>
+          <div class="field"><label>Origination Fee %</label><input type="number" id="eqOriginationFee" value="1.0" step="0.1"></div>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <!-- Term Loan -->
+  <div class="tab-panel" id="panel-term" data-print-title="EBITDA Term Loan">
+    <div class="card">
+      <h2>Term Loan — Results</h2>
+      <div class="grid grid-3">
+        <div class="stat"><div class="label">Loan Amount</div><div class="value big" id="tlLoanAmt">–</div></div>
+        <div class="stat"><div class="label">Annual Debt Service</div><div class="value" id="tlAnnualDS">–</div></div>
+        <div class="stat"><div class="label">DSCR</div><div class="value" id="tlDSCR">–</div><div class="sub" id="tlDSCRFlag"></div></div>
+      </div>
+      <table>
+        <tr><th>Component</th><th class="num">Amount</th></tr>
+        <tr><td>Loan amount</td><td class="num" id="tlLoanAmt2">–</td></tr>
+        <tr><td>Annual debt service</td><td class="num" id="tlAnnualDS2">–</td></tr>
+        <tr><td>Year 1 interest</td><td class="num" id="tlYr1Interest">–</td></tr>
+        <tr class="highlight"><td>Effective cost of capital (Yr 1)</td><td class="num" id="tlEffCost">–</td></tr>
+      </table>
+    </div>
+
+    <details>
+      <summary>Adjust Assumptions</summary>
+      <div class="details-body">
+        <div class="grid grid-4">
+          <div class="field"><label>Leverage Multiple (x EBITDA)</label><input type="number" id="tlMultiple" value="3.0" step="0.25"></div>
+          <div class="field"><label>Pricing Spread over SOFR %</label><input type="number" id="tlSpread" value="3.5" step="0.05"></div>
+          <div class="field"><label>Term (months)</label><input type="number" id="tlTerm" value="60" step="6"></div>
+          <div class="field"><label>DSCR Covenant Minimum</label><input type="number" id="tlCovenant" value="1.25" step="0.05"></div>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <!-- Capital Stack -->
+  <div class="tab-panel" id="panel-cre" data-print-title="Commercial Real Estate Loan">
+    <div class="card">
+      <h2>CRE Loan — Results <span style="font-weight:400;font-size:12px;color:var(--muted);">— sized to the binding constraint</span></h2>
+      <div class="grid grid-3">
+        <div class="stat"><div class="label">Sized Loan Amount</div><div class="value big" id="creLoanAmt">–</div><div class="sub" id="creBindingConstraint"></div></div>
+        <div class="stat"><div class="label">Monthly Payment</div><div class="value" id="crePayment">–</div><div class="sub" id="creAmortSub"></div></div>
+        <div class="stat"><div class="label">Effective Cost of Capital (Yr 1)</div><div class="value" id="creEffCost">–</div></div>
+      </div>
+      <table style="margin-top:18px;">
+        <tr><th>Sizing Constraint</th><th class="num">Implied Loan Amount</th></tr>
+        <tr><td>LTV-based (Property Value × Max LTV)</td><td class="num" id="creLTVAmt">–</td></tr>
+        <tr><td>DSCR-based (NOI ÷ Min DSCR, amortized)</td><td class="num" id="creDSCRAmt">–</td></tr>
+        <tr><td>Debt Yield-based (NOI ÷ Min Debt Yield)</td><td class="num" id="creDYAmt">–</td></tr>
+        <tr class="highlight"><td>Sized loan amount (lesser of the three)</td><td class="num" id="creSizedAmt">–</td></tr>
+      </table>
+      <table style="margin-top:14px;">
+        <tr><th>At Sized Loan Amount</th><th class="num">Result</th></tr>
+        <tr><td>Resulting LTV</td><td class="num" id="creResultLTV">–</td></tr>
+        <tr><td>Resulting DSCR</td><td class="num" id="creResultDSCR">–</td></tr>
+        <tr><td>Resulting Debt Yield</td><td class="num" id="creResultDY">–</td></tr>
+        <tr><td>Implied value from NOI ÷ market cap rate (cross-check)</td><td class="num" id="creImpliedValue">–</td></tr>
+        <tr><td>Balloon balance at end of term</td><td class="num" id="creBalloonBalance">–</td></tr>
+      </table>
+      <div class="footnote" id="creaPrepayNote"></div>
+    </div>
+
+    <details>
+      <summary>Adjust Assumptions</summary>
+      <div class="details-body">
+        <div class="grid grid-3">
+          <div class="field"><label>Max LTV %</label><input type="number" id="creLTV" value="70" step="1"></div>
+          <div class="field"><label>Min DSCR Covenant</label><input type="number" id="creDSCRMin" value="1.25" step="0.05"></div>
+          <div class="field"><label>Min Debt Yield %</label><input type="number" id="creDYMin" value="9" step="0.5"></div>
+          <div class="field"><label>Amortization (years)</label><input type="number" id="creAmortYears" value="25" step="1"></div>
+          <div class="field"><label>Term / Balloon (years)</label><input type="number" id="creTermYears" value="10" step="1"><div class="hint">Fixed-rate period before balloon or reprice</div></div>
+          <div class="field"><label>Pricing Spread over Index %</label><input type="number" id="creSpread" value="2.5" step="0.05"></div>
+          <div class="field"><label>Origination / Loan Fee %</label><input type="number" id="creOrigFee" value="1.0" step="0.1"></div>
+          <div class="field"><label>Market Cap Rate % (value cross-check)</label><input type="number" id="creCapRate" value="7.5" step="0.25"></div>
+          <div class="field">
+            <label>Prepayment Structure</label>
+            <select id="crePrepay">
+              <option value="none">None / Open</option>
+              <option value="stepdown" selected>Step-Down (e.g. 5-4-3-2-1)</option>
+              <option value="yieldmaint">Yield Maintenance</option>
+              <option value="defeasance">Defeasance</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <!-- Capital Stack -->
+
+  <div class="tab-panel" id="panel-stack" data-print-title="Capital Stack Summary">
+    <div class="card">
+      <h2>Capital Stack Builder <span style="font-weight:400;font-size:12px;color:var(--muted);">— combine instruments and see the blended picture</span></h2>
+      <div class="grid grid-4">
+        <div class="checkbox-row"><input type="checkbox" id="stackABL" checked><label for="stackABL">ABL</label></div>
+        <div class="checkbox-row"><input type="checkbox" id="stackRevolver"><label for="stackRevolver">Revolver / LOC</label></div>
+        <div class="checkbox-row"><input type="checkbox" id="stackFactoring"><label for="stackFactoring">Factoring</label></div>
+        <div class="checkbox-row"><input type="checkbox" id="stackEquip" checked><label for="stackEquip">Equipment Finance</label></div>
+        <div class="checkbox-row"><input type="checkbox" id="stackTerm"><label for="stackTerm">EBITDA Term Loan</label></div>
+        <div class="checkbox-row"><input type="checkbox" id="stackCRE"><label for="stackCRE">CRE Loan</label></div>
+      </div>
+      <div class="instrument-conflict" id="stackConflict" style="display:none;"></div>
+    </div>
+
+    <div class="card">
+      <h2>Blended Stack — Results</h2>
+      <div class="grid grid-4">
+        <div class="stat"><div class="label">Total Capital Available</div><div class="value big" id="stackTotalAvail">–</div></div>
+        <div class="stat"><div class="label">Blended Cost of Capital</div><div class="value" id="stackBlendedCost">–</div></div>
+        <div class="stat"><div class="label">Aggregate Leverage</div><div class="value" id="stackLeverage">–</div><div class="sub">Total debt ÷ EBITDA</div></div>
+        <div class="stat"><div class="label">Stack DSCR</div><div class="value" id="stackDSCR">–</div></div>
+      </div>
+      <div id="stackFlags" style="margin-top:14px;"></div>
+      <div class="barchart" style="margin-top:20px;" id="stackBarChart"></div>
+      <table style="margin-top:10px;">
+        <tr><th>Instrument</th><th class="num">Availability</th><th class="num">Annual Cost</th><th class="num">Effective Rate</th></tr>
+        <tbody id="stackTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <details>
+    <summary>Advanced: Amortization Schedules &amp; DSCR Detail</summary>
+    <div class="details-body">
+      <div class="grid grid-2">
+        <div>
+          <h3 style="font-family:'Sora',sans-serif;font-size:13.5px;color:var(--navy);">Equipment Finance — First 12 Months</h3>
+          <table><thead><tr><th>Mo</th><th class="num">Payment</th><th class="num">Interest</th><th class="num">Principal</th><th class="num">Balance</th></tr></thead><tbody id="eqAmortBody"></tbody></table>
+        </div>
+        <div>
+          <h3 style="font-family:'Sora',sans-serif;font-size:13.5px;color:var(--navy);">Term Loan — First 12 Months</h3>
+          <table><thead><tr><th>Mo</th><th class="num">Payment</th><th class="num">Interest</th><th class="num">Principal</th><th class="num">Balance</th></tr></thead><tbody id="tlAmortBody"></tbody></table>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <div class="footnote">
+    All figures are planning estimates based on adjustable assumptions, not committed terms — actual advance rates, reserves, and pricing are determined by the funding source at term sheet. Instrument-agnostic by design: this analysis supports the capital-structuring conversation and does not constitute a loan approval, commitment, or offer.
+  </div>
+
+</div>
+</div>
+
+<script>
+function $(id){return document.getElementById(id);}
+function num(id){return parseFloat($(id).value)||0;}
+function fmtUSD(v){
+  if(!isFinite(v)) v=0;
+  return '$'+Math.round(v).toLocaleString('en-US');
+}
+function fmtPct(v,d){
+  if(!isFinite(v)) v=0;
+  return v.toFixed(d===undefined?2:d)+'%';
+}
+function pmt(principal, monthlyRate, n){
+  if(n<=0) return 0;
+  if(monthlyRate===0) return principal/n;
+  return principal*monthlyRate/(1-Math.pow(1+monthlyRate,-n));
+}
+function amortSchedule(principal, annualRate, termMonths, monthsToShow){
+  var monthlyRate = annualRate/100/12;
+  var payment = pmt(principal, monthlyRate, termMonths);
+  var balance = principal;
+  var rows=[];
+  var yr1Interest=0;
+  var n = monthsToShow || termMonths;
+  for(var m=1;m<=termMonths;m++){
+    var interest = balance*monthlyRate;
+    var principalPaid = payment-interest;
+    balance = Math.max(0, balance-principalPaid);
+    if(m<=12) yr1Interest+=interest;
+    if(m<=n){
+      rows.push({m:m,payment:payment,interest:interest,principal:principalPaid,balance:balance});
+    }
+  }
+  return {payment:payment, rows:rows, yr1Interest:yr1Interest, annualDebtService:payment*12};
+}
+
+// Tabs
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+    document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
+    btn.classList.add('active');
+    $('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+$('ablIncludeEquip').addEventListener('change', function(){
+  $('ablEquipRow').style.display = this.checked ? 'grid' : 'none';
+  update();
+});
+
+var eqCategoryHints = {
+  new: 'Typical advance: 90-100%. New, standard, easily remarketed assets (trucks, forklifts, standard machine tools).',
+  used: 'Typical advance: 70-85%. Used equipment with an active resale market.',
+  specialized: 'Typical advance: 40-60%. Custom-built or installed process equipment — harder to remarket, lower recovery.',
+  manual: 'Advance rate set manually below — not tied to a category default.'
+};
+var eqBasisHints = {
+  FMV: 'What a willing buyer and seller would agree to — typical basis for new equipment or invoice cost.',
+  OLV: 'What it would fetch with reasonable time to market it — the most common basis for advance rates.',
+  FLV: 'Fire-sale/auction-tomorrow value — used for riskier or highly specialized collateral.'
+};
+function updateEqCategoryHint(){
+  var sel = $('eqCategory');
+  var val = sel.value;
+  $('eqCategoryHint').textContent = eqCategoryHints[val] || '';
+  if(val !== 'manual'){
+    var opt = sel.options[sel.selectedIndex];
+    $('eqAdvance').value = opt.getAttribute('data-advance');
+  }
+}
+function updateEqBasisHint(){
+  $('eqBasisHint').textContent = eqBasisHints[$('eqValuationBasis').value] || '';
+}
+$('eqCategory').addEventListener('change', function(){ updateEqCategoryHint(); update(); });
+$('eqValuationBasis').addEventListener('change', function(){ updateEqBasisHint(); update(); });
+updateEqCategoryHint();
+updateEqBasisHint();
+
+function updateRevSizingFields(){
+  var method = $('revSizingMethod').value;
+  $('revMultipleField').style.display = method==='ebitda' ? 'block' : 'none';
+  $('revFixedField').style.display = method==='fixed' ? 'block' : 'none';
+}
+$('revSizingMethod').addEventListener('change', function(){ updateRevSizingFields(); update(); });
+updateRevSizingFields();
+
+// ---------- PDF export ----------
+function updatePrintSubline(){
+  var preparedFor = $('preparedFor').value.trim();
+  var preparedBy = $('preparedBy').value.trim();
+  var today = new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+  var line = 'Cobalt Commercial Credit';
+  if(preparedFor) line += '  •  Prepared for ' + preparedFor;
+  if(preparedBy) line += '  •  ' + preparedBy;
+  line += '  •  ' + today;
+  $('printSubline').textContent = line;
+  $('screenSubline').textContent = line;
+}
+$('preparedFor').addEventListener('input', updatePrintSubline);
+$('preparedBy').addEventListener('input', updatePrintSubline);
+updatePrintSubline();
+
+function applyPdfSectionToggles(){
+  document.querySelectorAll('.pdf-toggle-row input[type=checkbox]').forEach(function(cb){
+    var panel = document.getElementById(cb.dataset.panel);
+    if(!panel) return;
+    if(cb.checked) panel.classList.remove('print-excluded');
+    else panel.classList.add('print-excluded');
+  });
+}
+
+$('exportPdfBtn').addEventListener('click', function(){
+  updatePrintSubline();
+  applyPdfSectionToggles();
+  document.body.classList.add('print-mode');
+  document.querySelectorAll('details').forEach(function(d){ d.open = true; });
+  window.print();
+});
+window.addEventListener('afterprint', function(){
+  document.body.classList.remove('print-mode');
+});
+// Also handle print triggered via keyboard shortcut (Ctrl/Cmd+P) rather than the button
+window.addEventListener('beforeprint', function(){
+  updatePrintSubline();
+  applyPdfSectionToggles();
+  document.body.classList.add('print-mode');
+  document.querySelectorAll('details').forEach(function(d){ d.open = true; });
+});
+
+function barChart(containerId, items){
+  // items: [{name, value, display, color}]
+  var maxVal = Math.max.apply(null, items.map(function(i){return i.value;}), 0.0001);
+  var html='';
+  items.forEach(function(i){
+    var pct = Math.max(2, (i.value/maxVal)*100);
+    html += '<div class="row"><div class="name">'+i.name+'</div><div class="track"><div class="fill" style="width:'+pct+'%;background:'+i.color+';"><span>'+i.display+'</span></div></div></div>';
+  });
+  $(containerId).innerHTML = html;
+}
+
+function ablScenario(advDeltaPts, rateDeltaPts){
+  var arBalance=num('arBalance'), ablArIneligible=num('ablArIneligible')/100;
+  var ablArAdvance=Math.max(0,num('ablArAdvance')/100+advDeltaPts/100);
+  var inventoryBalance=num('inventoryBalance'), ablInvEligiblePct=num('ablInvEligiblePct')/100;
+  var ablInvAdvance=Math.max(0,num('ablInvAdvance')/100+advDeltaPts/100);
+  var equipmentValue=num('equipmentValue'), ablIncludeEquip=$('ablIncludeEquip').checked;
+  var ablEquipAdvance=Math.max(0,num('ablEquipAdvance')/100+(ablIncludeEquip?advDeltaPts/100:0));
+  var existingSeniorDebt=num('existingSeniorDebt');
+  var ablSpread=num('ablSpread'), baseRate=num('baseRate')+rateDeltaPts;
+  var ablUnusedFeePct=num('ablUnusedFee')/100, ablUtilization=num('ablUtilization')/100;
+  var ablMonitoringFee=num('ablMonitoringFee'), ablClosingFeePct=num('ablClosingFee')/100;
+  var ablDilutionReservePct=num('ablDilutionReserve')/100, ablLandlordReserve=num('ablLandlordReserve');
+  var eligibleAR=arBalance*(1-ablArIneligible);
+  var arAvail=eligibleAR*ablArAdvance;
+  var eligibleInv=inventoryBalance*ablInvEligiblePct;
+  var invAvail=eligibleInv*ablInvAdvance;
+  var equipAvail=ablIncludeEquip?equipmentValue*ablEquipAdvance:0;
+  var gross=arAvail+invAvail+equipAvail;
+  var reserves=arAvail*ablDilutionReservePct+ablLandlordReserve;
+  var netAvail=Math.max(0,gross-reserves-existingSeniorDebt);
+  var allInRate=baseRate+ablSpread;
+  var avgOut=netAvail*ablUtilization;
+  var interest=avgOut*(allInRate/100);
+  var unusedFeeAmt=(netAvail-avgOut)*ablUnusedFeePct;
+  var closingFeeAmt=(netAvail*ablClosingFeePct)/3;
+  var totalCost=interest+unusedFeeAmt+ablMonitoringFee+closingFeeAmt;
+  var effCost=avgOut>0?(totalCost/avgOut)*100:0;
+  return {avail:netAvail, rate:effCost};
+}
+function factScenario(advDeltaPts, feeDeltaPts){
+  var arBalance=num('arBalance'), factArIneligible=num('factArIneligible')/100;
+  var factAdvance=Math.max(0.01,num('factAdvance')/100+advDeltaPts/100);
+  var factMonthlyFee=Math.max(0,num('factMonthlyFee')+feeDeltaPts);
+  var factAddlFees=num('factAddlFees');
+  var eligibleAR=arBalance*(1-factArIneligible);
+  var avail=eligibleAR*factAdvance;
+  var effAnnualRate=(factMonthlyFee/100/factAdvance)*(365/30)*100;
+  var feeCost=avail*(effAnnualRate/100);
+  var totalCost=feeCost+factAddlFees;
+  var effCost=avail>0?(totalCost/avail)*100:0;
+  return {avail:avail, rate:effCost};
+}
+function eqScenario(advDeltaPts, rateDeltaPts){
+  var equipmentValue=num('equipmentValue');
+  var eqAdvance=Math.max(0,num('eqAdvance')/100+advDeltaPts/100);
+  var eqSpread=num('eqSpread'), baseRate=num('baseRate')+rateDeltaPts;
+  var eqTerm=num('eqTerm'), eqOriginationFeePct=num('eqOriginationFee')/100;
+  var loanAmt=equipmentValue*eqAdvance;
+  var rate=baseRate+eqSpread;
+  var amort=amortSchedule(loanAmt, rate, eqTerm, 1);
+  var origFeeAmt=(loanAmt*eqOriginationFeePct)/Math.max(1,Math.min(3,eqTerm/12));
+  var totalCost=amort.yr1Interest+origFeeAmt;
+  var effCost=loanAmt>0?(totalCost/loanAmt)*100:0;
+  return {avail:loanAmt, rate:effCost};
+}
+function tlScenario(leverageDelta, rateDeltaPts){
+  var ebitda=num('ebitda');
+  var tlMultiple=Math.max(0,num('tlMultiple')+leverageDelta);
+  var tlSpread=num('tlSpread'), baseRate=num('baseRate')+rateDeltaPts;
+  var tlTerm=num('tlTerm');
+  var loanAmt=ebitda*tlMultiple;
+  var rate=baseRate+tlSpread;
+  var amort=amortSchedule(loanAmt, rate, tlTerm, 1);
+  var effCost=loanAmt>0?(amort.yr1Interest/loanAmt)*100:0;
+  return {avail:loanAmt, rate:effCost};
+}
+function revScenario(rateDeltaPts, multDeltaPts){
+  var method=$('revSizingMethod').value;
+  var ebitda=num('ebitda');
+  var mult=Math.max(0,num('revMultiple')+multDeltaPts);
+  var fixedAmt=num('revFixedAmt');
+  var facility=method==='ebitda'?ebitda*mult:fixedAmt;
+  var spread=num('revSpread'), baseRate=num('baseRate')+rateDeltaPts;
+  var unusedFeePct=num('revUnusedFee')/100, util=num('revUtilization')/100;
+  var renewalFee=num('revRenewalFeeInput');
+  var allInRate=baseRate+spread;
+  var avgOut=facility*util;
+  var interest=avgOut*(allInRate/100);
+  var unusedFeeAmt=(facility-avgOut)*unusedFeePct;
+  var totalCost=interest+unusedFeeAmt+renewalFee;
+  var effCost=avgOut>0?(totalCost/avgOut)*100:0;
+  return {avail:facility, rate:effCost};
+}
+function creScenario(rateDeltaPts, ltvDeltaPts){
+  var propertyValue=num('propertyValue'), propertyNOI=num('propertyNOI');
+  var ltv=Math.max(0,num('creLTV')+ltvDeltaPts);
+  var dscrMin=num('creDSCRMin'), dyMin=num('creDYMin');
+  var amortYears=num('creAmortYears'), spread=num('creSpread'), baseRate=num('baseRate')+rateDeltaPts;
+  var rate=baseRate+spread;
+  var monthlyRate=rate/100/12;
+  var amortMonths=amortYears*12;
+  var ltvAmt=propertyValue*ltv/100;
+  var maxAnnualDS=dscrMin>0?propertyNOI/dscrMin:0;
+  var maxMonthlyPmt=maxAnnualDS/12;
+  var dscrAmt = monthlyRate>0 ? maxMonthlyPmt*(1-Math.pow(1+monthlyRate,-amortMonths))/monthlyRate : maxMonthlyPmt*amortMonths;
+  var dyAmt = dyMin>0 ? propertyNOI/(dyMin/100) : 0;
+  var sized=Math.min(ltvAmt, dscrAmt, dyAmt);
+  if(!isFinite(sized)||sized<0) sized=0;
+  var amort=amortSchedule(sized, rate, amortMonths, 0);
+  var origFeeAmt=sized*(num('creOrigFee')/100);
+  var totalCost=amort.yr1Interest+origFeeAmt;
+  var effCost=sized>0?(totalCost/sized)*100:0;
+  return {avail:sized, rate:effCost};
+}
+function updateSensitivity(){
+  var costRows = [
+    {name:'ABL', down:ablScenario(0,1).rate, base:ablScenario(0,0).rate, up:ablScenario(0,-1).rate},
+    {name:'Revolver/LOC', down:revScenario(1,0).rate, base:revScenario(0,0).rate, up:revScenario(-1,0).rate},
+    {name:'Factoring', down:factScenario(0,0.25).rate, base:factScenario(0,0).rate, up:factScenario(0,-0.25).rate},
+    {name:'Equipment Fin.', down:eqScenario(0,1).rate, base:eqScenario(0,0).rate, up:eqScenario(0,-1).rate},
+    {name:'Term Loan', down:tlScenario(0,1).rate, base:tlScenario(0,0).rate, up:tlScenario(0,-1).rate},
+    {name:'CRE Loan', down:creScenario(1,0).rate, base:creScenario(0,0).rate, up:creScenario(-1,0).rate}
+  ];
+  var costHtml='';
+  costRows.forEach(function(r){
+    costHtml += '<tr><td>'+r.name+'</td><td class="num">'+fmtPct(r.down,2)+'</td><td class="num">'+fmtPct(r.base,2)+'</td><td class="num">'+fmtPct(r.up,2)+'</td></tr>';
+  });
+  $('sensCostBody').innerHTML = costHtml;
+
+  var availRows = [
+    {name:'ABL', down:ablScenario(-5,0).avail, base:ablScenario(0,0).avail, up:ablScenario(5,0).avail},
+    {name:'Revolver/LOC', down:revScenario(0,-0.25).avail, base:revScenario(0,0).avail, up:revScenario(0,0.25).avail},
+    {name:'Factoring', down:factScenario(-5,0).avail, base:factScenario(0,0).avail, up:factScenario(5,0).avail},
+    {name:'Equipment Fin.', down:eqScenario(-5,0).avail, base:eqScenario(0,0).avail, up:eqScenario(5,0).avail},
+    {name:'Term Loan', down:tlScenario(-0.5,0).avail, base:tlScenario(0,0).avail, up:tlScenario(0.5,0).avail},
+    {name:'CRE Loan', down:creScenario(0,-5).avail, base:creScenario(0,0).avail, up:creScenario(0,5).avail}
+  ];
+  var availHtml='';
+  availRows.forEach(function(r){
+    availHtml += '<tr><td>'+r.name+'</td><td class="num">'+fmtUSD(r.down)+'</td><td class="num">'+fmtUSD(r.base)+'</td><td class="num">'+fmtUSD(r.up)+'</td></tr>';
+  });
+  $('sensAvailBody').innerHTML = availHtml;
+}
+
+function update(){
+  var ebitda = num('ebitda');
+  var arBalance = num('arBalance');
+  var arDSO = num('arDSO');
+  var inventoryBalance = num('inventoryBalance');
+  var equipmentValue = num('equipmentValue');
+  var existingSeniorDebt = num('existingSeniorDebt');
+  var baseRate = num('baseRate');
+
+  // ---------- ABL ----------
+  var ablArIneligible = num('ablArIneligible')/100;
+  var ablArAdvance = num('ablArAdvance')/100;
+  var ablInvEligiblePct = num('ablInvEligiblePct')/100;
+  var ablInvAdvance = num('ablInvAdvance')/100;
+  var ablSpread = num('ablSpread');
+  var ablUnusedFeePct = num('ablUnusedFee')/100;
+  var ablUtilization = num('ablUtilization')/100;
+  var ablMonitoringFee = num('ablMonitoringFee');
+  var ablClosingFeePct = num('ablClosingFee')/100;
+  var ablDilutionReservePct = num('ablDilutionReserve')/100;
+  var ablLandlordReserve = num('ablLandlordReserve');
+  var ablIncludeEquip = $('ablIncludeEquip').checked;
+  var ablEquipAdvance = num('ablEquipAdvance')/100;
+
+  var ablEligibleAR = arBalance*(1-ablArIneligible);
+  var ablArAvail = ablEligibleAR*ablArAdvance;
+  var ablEligibleInv = inventoryBalance*ablInvEligiblePct;
+  var ablInvAvail = ablEligibleInv*ablInvAdvance;
+  var ablEquipAvail = ablIncludeEquip ? equipmentValue*ablEquipAdvance : 0;
+  var ablGrossAvail = ablArAvail+ablInvAvail+ablEquipAvail;
+  var ablReserves = ablArAvail*ablDilutionReservePct + ablLandlordReserve;
+  var ablNetAvail = Math.max(0, ablGrossAvail - ablReserves - existingSeniorDebt);
+  var ablAllInRate = baseRate+ablSpread;
+  var ablAvgOutstanding = ablNetAvail*ablUtilization;
+  var ablInterest = ablAvgOutstanding*(ablAllInRate/100);
+  var ablUnusedFeeAmt = (ablNetAvail-ablAvgOutstanding)*ablUnusedFeePct;
+  var ablClosingFeeAmt = (ablNetAvail*ablClosingFeePct)/3;
+  var ablTotalCost = ablInterest+ablUnusedFeeAmt+ablMonitoringFee+ablClosingFeeAmt;
+  var ablEffCost = ablAvgOutstanding>0 ? (ablTotalCost/ablAvgOutstanding)*100 : 0;
+
+  $('ablArAvail').textContent = fmtUSD(ablArAvail);
+  $('ablInvAvail').textContent = fmtUSD(ablInvAvail);
+  $('ablEquipAvail').textContent = fmtUSD(ablEquipAvail);
+  $('ablGrossAvail').textContent = fmtUSD(ablGrossAvail);
+  $('ablReserves').textContent = '– '+fmtUSD(ablReserves);
+  $('ablLessDebt').textContent = '– '+fmtUSD(existingSeniorDebt);
+  $('ablNetAvail2').textContent = fmtUSD(ablNetAvail);
+  $('ablInterest').textContent = fmtUSD(ablInterest);
+  $('ablUnusedFeeAmt').textContent = fmtUSD(ablUnusedFeeAmt);
+  $('ablMonitoringFeeAmt').textContent = fmtUSD(ablMonitoringFee);
+  $('ablClosingFeeAmt').textContent = fmtUSD(ablClosingFeeAmt);
+  $('ablTotalCost').textContent = fmtUSD(ablTotalCost);
+  $('ablNetAvail').textContent = fmtUSD(ablNetAvail);
+  $('ablNetAvailSub').textContent = 'Gross '+fmtUSD(ablGrossAvail)+' less reserves & existing debt';
+  $('ablAllInRate').textContent = fmtPct(ablAllInRate,2);
+  $('ablEffCost').textContent = fmtPct(ablEffCost,2);
+
+  // ---------- Factoring ----------
+  var factArIneligible = num('factArIneligible')/100;
+  var factAdvance = num('factAdvance')/100;
+  var factMonthlyFee = num('factMonthlyFee');
+  var factAddlFees = num('factAddlFees');
+
+  var factEligibleAR = arBalance*(1-factArIneligible);
+  var factAvail = factEligibleAR*factAdvance;
+  var factEffAnnualRate = factAdvance>0 ? (factMonthlyFee/100/factAdvance)*(365/30)*100 : 0;
+  var factFeeCost = factAvail*(factEffAnnualRate/100);
+  var factTotalCost = factFeeCost+factAddlFees;
+  var factOverallEffCost = factAvail>0 ? (factTotalCost/factAvail)*100 : 0;
+
+  $('factAvail').textContent = fmtUSD(factAvail);
+  $('factQuoted').textContent = fmtPct(factMonthlyFee,2);
+  $('factEffCost').textContent = fmtPct(factOverallEffCost,2);
+  $('factEligibleAR').textContent = fmtUSD(factEligibleAR);
+  $('factAvail2').textContent = fmtUSD(factAvail);
+  $('factFeeCost').textContent = fmtUSD(factFeeCost);
+  $('factAddlFeesRow').textContent = fmtUSD(factAddlFees);
+  $('factTotalCost').textContent = fmtUSD(factTotalCost);
+  var gapMultiple = factMonthlyFee>0 ? (factOverallEffCost/factMonthlyFee) : 0;
+  $('factGapBanner').textContent = 'A '+fmtPct(factMonthlyFee,2)+' monthly factor fee annualizes to roughly '+fmtPct(factOverallEffCost,1)+' — about '+gapMultiple.toFixed(1)+'x the quoted number. Quote the effective rate, not the monthly fee.';
+
+  // ---------- Equipment Finance ----------
+  var eqAdvance = num('eqAdvance')/100;
+  var eqSpread = num('eqSpread');
+  var eqTerm = num('eqTerm');
+  var eqOriginationFeePct = num('eqOriginationFee')/100;
+  var eqUsefulLifeYears = num('eqUsefulLife');
+  var eqBasis = $('eqValuationBasis').value;
+
+  var eqLoanAmt = equipmentValue*eqAdvance;
+  var eqRate = baseRate+eqSpread;
+  var eqAmort = amortSchedule(eqLoanAmt, eqRate, eqTerm, 12);
+  var eqOrigFeeAmt = (eqLoanAmt*eqOriginationFeePct)/Math.max(1,Math.min(3,eqTerm/12));
+  var eqTotalCost = eqAmort.yr1Interest+eqOrigFeeAmt;
+  var eqEffCost = eqLoanAmt>0 ? (eqTotalCost/eqLoanAmt)*100 : 0;
+
+  $('eqLoanAmt').textContent = fmtUSD(eqLoanAmt);
+  $('eqLoanAmt2').textContent = fmtUSD(eqLoanAmt);
+  $('eqPayment').textContent = fmtUSD(eqAmort.payment)+'/mo';
+  $('eqAnnualDS').textContent = fmtUSD(eqAmort.annualDebtService);
+  $('eqYr1Interest').textContent = fmtUSD(eqAmort.yr1Interest);
+  $('eqOrigFeeAmt').textContent = fmtUSD(eqOrigFeeAmt);
+  $('eqTotalCost').textContent = fmtUSD(eqTotalCost);
+  $('eqEffCost').textContent = fmtPct(eqEffCost,2);
+  $('eqCollateralValue').textContent = fmtUSD(equipmentValue);
+  $('eqAdvanceApplied').textContent = fmtPct(eqAdvance*100,0);
+  $('eqBasisLabelInline').textContent = eqBasis;
+
+  var termYears = eqTerm/12;
+  if(termYears > eqUsefulLifeYears){
+    $('eqTermBanner').style.display = 'block';
+    $('eqTermBanner').textContent = 'Term ('+termYears.toFixed(1)+' yrs) exceeds the remaining useful life ('+eqUsefulLifeYears+' yrs) entered — most lenders won\'t amortize past the equipment\'s useful life. Shorten the term or confirm useful life with the client.';
+  } else {
+    $('eqTermBanner').style.display = 'none';
+  }
+
+  var eqAmortBody = '';
+  eqAmort.rows.forEach(function(r){
+    eqAmortBody += '<tr><td>'+r.m+'</td><td class="num">'+fmtUSD(r.payment)+'</td><td class="num">'+fmtUSD(r.interest)+'</td><td class="num">'+fmtUSD(r.principal)+'</td><td class="num">'+fmtUSD(r.balance)+'</td></tr>';
+  });
+  $('eqAmortBody').innerHTML = eqAmortBody;
+
+  // ---------- Term Loan ----------
+  var tlMultiple = num('tlMultiple');
+  var tlSpread = num('tlSpread');
+  var tlTerm = num('tlTerm');
+  var tlCovenant = num('tlCovenant');
+
+  var tlLoanAmt = ebitda*tlMultiple;
+  var tlRate = baseRate+tlSpread;
+  var tlAmort = amortSchedule(tlLoanAmt, tlRate, tlTerm, 12);
+  var tlEffCost = tlLoanAmt>0 ? (tlAmort.yr1Interest/tlLoanAmt)*100 : 0;
+  var tlDSCR = tlAmort.annualDebtService>0 ? ebitda/tlAmort.annualDebtService : 0;
+
+  $('tlLoanAmt').textContent = fmtUSD(tlLoanAmt);
+  $('tlLoanAmt2').textContent = fmtUSD(tlLoanAmt);
+  $('tlAnnualDS').textContent = fmtUSD(tlAmort.annualDebtService);
+  $('tlAnnualDS2').textContent = fmtUSD(tlAmort.annualDebtService);
+  $('tlYr1Interest').textContent = fmtUSD(tlAmort.yr1Interest);
+  $('tlEffCost').textContent = fmtPct(tlEffCost,2);
+  $('tlDSCR').textContent = tlDSCR.toFixed(2)+'x';
+  var tlFlag = tlDSCR>=tlCovenant ? '<span class="flag ok">Above covenant</span>' : '<span class="flag bad">Below covenant ('+tlCovenant.toFixed(2)+'x min)</span>';
+  $('tlDSCRFlag').innerHTML = tlFlag;
+
+  var tlAmortBody='';
+  tlAmort.rows.forEach(function(r){
+    tlAmortBody += '<tr><td>'+r.m+'</td><td class="num">'+fmtUSD(r.payment)+'</td><td class="num">'+fmtUSD(r.interest)+'</td><td class="num">'+fmtUSD(r.principal)+'</td><td class="num">'+fmtUSD(r.balance)+'</td></tr>';
+  });
+  $('tlAmortBody').innerHTML = tlAmortBody;
+
+  // ---------- Revolver / LOC ----------
+  var revSizingMethod = $('revSizingMethod').value;
+  var revMultiple = num('revMultiple');
+  var revFixedAmt = num('revFixedAmt');
+  var revSpread = num('revSpread');
+  var revUnusedFeePct = num('revUnusedFee')/100;
+  var revUtilization = num('revUtilization')/100;
+  var revRenewalFee = num('revRenewalFeeInput');
+  var revFCCRCovenant = num('revFCCRCovenant');
+
+  var revFacility = revSizingMethod==='ebitda' ? ebitda*revMultiple : revFixedAmt;
+  var revAllInRate = baseRate+revSpread;
+  var revAvgOut = revFacility*revUtilization;
+  var revInterest = revAvgOut*(revAllInRate/100);
+  var revUnusedFeeAmt = (revFacility-revAvgOut)*revUnusedFeePct;
+  var revTotalCost = revInterest+revUnusedFeeAmt+revRenewalFee;
+  var revEffCost = revAvgOut>0 ? (revTotalCost/revAvgOut)*100 : 0;
+  var revFCCR = revTotalCost>0 ? ebitda/revTotalCost : 0;
+
+  $('revFacility').textContent = fmtUSD(revFacility);
+  $('revFacilitySub').textContent = revSizingMethod==='ebitda' ? (revMultiple.toFixed(2)+'x EBITDA') : 'Fixed facility amount';
+  $('revAllInRate').textContent = fmtPct(revAllInRate,2);
+  $('revEffCost').textContent = fmtPct(revEffCost,2);
+  $('revFacilityAmt').textContent = fmtUSD(revFacility);
+  $('revInterest').textContent = fmtUSD(revInterest);
+  $('revUnusedFeeAmt').textContent = fmtUSD(revUnusedFeeAmt);
+  $('revRenewalFee').textContent = fmtUSD(revRenewalFee);
+  $('revTotalCost').textContent = fmtUSD(revTotalCost);
+  $('revFCCR').textContent = revFCCR>0 ? revFCCR.toFixed(2)+'x' : '–';
+  $('revFCCRFlag').innerHTML = revFCCR>=revFCCRCovenant ? '<span class="flag ok">Above covenant</span>' : '<span class="flag bad">Below covenant ('+revFCCRCovenant.toFixed(2)+'x min)</span>';
+
+  // ---------- CRE Loan ----------
+  var propertyValue = num('propertyValue');
+  var propertyNOI = num('propertyNOI');
+  var creLTVPct = num('creLTV');
+  var creDSCRMin = num('creDSCRMin');
+  var creDYMin = num('creDYMin');
+  var creAmortYears = num('creAmortYears');
+  var creTermYears = num('creTermYears');
+  var creSpread = num('creSpread');
+  var creOrigFeePct = num('creOrigFee')/100;
+  var creCapRatePct = num('creCapRate');
+  var crePrepayType = $('crePrepay').value;
+
+  var creRate = baseRate+creSpread;
+  var creMonthlyRate = creRate/100/12;
+  var creAmortMonths = creAmortYears*12;
+
+  var creLTVAmt = propertyValue*(creLTVPct/100);
+  var creMaxAnnualDS = creDSCRMin>0 ? propertyNOI/creDSCRMin : 0;
+  var creMaxMonthlyPmt = creMaxAnnualDS/12;
+  var creDSCRAmt = creMonthlyRate>0 ? creMaxMonthlyPmt*(1-Math.pow(1+creMonthlyRate,-creAmortMonths))/creMonthlyRate : creMaxMonthlyPmt*creAmortMonths;
+  var creDYAmt = creDYMin>0 ? propertyNOI/(creDYMin/100) : 0;
+
+  var creConstraints = [
+    {name:'LTV', amt:creLTVAmt},
+    {name:'DSCR', amt:creDSCRAmt},
+    {name:'Debt Yield', amt:creDYAmt}
+  ];
+  var creBinding = creConstraints.reduce(function(a,b){ return (b.amt<a.amt)?b:a; });
+  var creSizedAmt = Math.max(0, creBinding.amt);
+
+  var creAmort = amortSchedule(creSizedAmt, creRate, creAmortMonths, 0);
+  var creOrigFeeAmt = creSizedAmt*creOrigFeePct;
+  var creTotalCostYr1 = creAmort.yr1Interest+creOrigFeeAmt;
+  var creEffCost = creSizedAmt>0 ? (creTotalCostYr1/creSizedAmt)*100 : 0;
+
+  var creResultLTV = propertyValue>0 ? (creSizedAmt/propertyValue)*100 : 0;
+  var creResultDSCR = creAmort.annualDebtService>0 ? propertyNOI/creAmort.annualDebtService : 0;
+  var creResultDY = creSizedAmt>0 ? (propertyNOI/creSizedAmt)*100 : 0;
+  var creImpliedValue = creCapRatePct>0 ? propertyNOI/(creCapRatePct/100) : 0;
+
+  // balloon balance at end of term (term years may be shorter than full amortization)
+  var creBalloonBalance = creSizedAmt;
+  var creTermMonths = Math.min(creTermYears*12, creAmortMonths);
+  if(creMonthlyRate===0){
+    creBalloonBalance = Math.max(0, creSizedAmt - creAmort.payment*creTermMonths);
+  } else {
+    var bal = creSizedAmt;
+    for(var cm=1; cm<=creTermMonths; cm++){
+      var iPmt = bal*creMonthlyRate;
+      bal = Math.max(0, bal - (creAmort.payment-iPmt));
+    }
+    creBalloonBalance = bal;
+  }
+
+  $('creLoanAmt').textContent = fmtUSD(creSizedAmt);
+  $('creBindingConstraint').textContent = 'Binding: '+creBinding.name;
+  $('crePayment').textContent = fmtUSD(creAmort.payment)+'/mo';
+  $('creAmortSub').textContent = creAmortYears+'-yr amort / '+creTermYears+'-yr term';
+  $('creEffCost').textContent = fmtPct(creEffCost,2);
+  $('creLTVAmt').textContent = fmtUSD(creLTVAmt);
+  $('creDSCRAmt').textContent = fmtUSD(creDSCRAmt);
+  $('creDYAmt').textContent = fmtUSD(creDYAmt);
+  $('creSizedAmt').textContent = fmtUSD(creSizedAmt);
+  $('creResultLTV').textContent = fmtPct(creResultLTV,1);
+  $('creResultDSCR').textContent = creResultDSCR.toFixed(2)+'x';
+  $('creResultDY').textContent = fmtPct(creResultDY,2);
+  $('creImpliedValue').textContent = fmtUSD(creImpliedValue);
+  $('creBalloonBalance').textContent = fmtUSD(creBalloonBalance);
+
+  var prepayNotes = {
+    none: 'No prepayment penalty modeled — facility is open to prepay at any time.',
+    stepdown: 'Step-down structure (e.g. 5%-4%-3%-2%-1% of balance across years 1-5) approximated conceptually here — confirm the exact grid with the lender at term sheet.',
+    yieldmaint: 'Yield maintenance penalty is the NPV of the rate differential over the remaining term — not modeled dollar-for-dollar here since it depends on rates at prepayment. Can be material if rates have fallen since closing.',
+    defeasance: 'Defeasance replaces the loan with a portfolio of Treasuries producing equivalent cash flows — typically the most expensive prepayment structure and not modeled dollar-for-dollar here.'
+  };
+  $('creaPrepayNote').textContent = prepayNotes[crePrepayType] || '';
+
+  // ---------- Comparison (all four) ----------
+  var compareItems = [
+    {name:'ABL', avail:ablNetAvail, cost:ablTotalCost, rate:ablEffCost, color:'var(--cobalt)'},
+    {name:'Revolver/LOC', avail:revFacility, cost:revTotalCost, rate:revEffCost, color:'#6d8fc9'},
+    {name:'Factoring', avail:factAvail, cost:factTotalCost, rate:factOverallEffCost, color:'var(--secondary)'},
+    {name:'Equipment Fin.', avail:eqLoanAmt, cost:eqTotalCost, rate:eqEffCost, color:'var(--tertiary)'},
+    {name:'Term Loan', avail:tlLoanAmt, cost:tlAmort.yr1Interest, rate:tlEffCost, color:'var(--navy)'},
+    {name:'CRE Loan', avail:creSizedAmt, cost:creTotalCostYr1, rate:creEffCost, color:'#0a6e4a'}
+  ];
+  barChart('compareBarChart', compareItems.map(function(i){return {name:i.name, value:i.rate, display:fmtPct(i.rate,2), color:i.color};}));
+  var compareRows='';
+  compareItems.forEach(function(i){
+    compareRows += '<tr><td>'+i.name+'</td><td class="num">'+fmtUSD(i.avail)+'</td><td class="num">'+fmtUSD(i.cost)+'</td><td class="num">'+fmtPct(i.rate,2)+'</td></tr>';
+  });
+  $('compareTableBody').innerHTML = compareRows;
+
+  var maxAvailItem = compareItems.reduce(function(a,b){return b.avail>a.avail?b:a;});
+  var minCostItem = compareItems.filter(function(i){return i.avail>0;}).reduce(function(a,b){return (a===null||b.rate<a.rate)?b:a;}, null) || compareItems[0];
+  $('snapMaxAvailName').textContent = maxAvailItem.name;
+  $('snapMaxAvailAmt').textContent = fmtUSD(maxAvailItem.avail)+' available';
+  $('snapMinCostName').textContent = minCostItem.name;
+  $('snapMinCostRate').textContent = fmtPct(minCostItem.rate,2)+' effective cost';
+
+  // ---------- Capital Stack ----------
+  var useABL = $('stackABL').checked;
+  var useRev = $('stackRevolver').checked;
+  var useFact = $('stackFactoring').checked;
+  var useEq = $('stackEquip').checked;
+  var useTL = $('stackTerm').checked;
+  var useCRE = $('stackCRE').checked;
+
+  var arConflict = useABL && useFact;
+  var equipConflict = useABL && ablIncludeEquip && useEq;
+  var revolverConflict = useABL && useRev;
+  var conflictMsgs = [];
+  if(arConflict) conflictMsgs.push('ABL and factoring both lien accounts receivable — these are not additive. In practice you pick one AR-based facility, not both.');
+  if(equipConflict) conflictMsgs.push('The ABL sublimit includes equipment, and standalone Equipment Finance is also selected — both are collateralizing the same equipment value. Uncheck the ABL equipment sublimit or drop standalone Equipment Finance from the stack.');
+  if(revolverConflict) conflictMsgs.push('ABL and Revolver/LOC both serve as the primary working capital facility — a borrower typically has one, not both. Pick the formula-driven ABL or the relationship-based revolver, not both.');
+  $('stackConflict').style.display = conflictMsgs.length ? 'block' : 'none';
+  $('stackConflict').innerHTML = conflictMsgs.join('<br>');
+
+  var stackItems = [];
+  if(useABL) stackItems.push({name:'ABL', avail:ablNetAvail, cost:ablTotalCost, rate:ablEffCost, color:'var(--cobalt)', debtService: ablInterest+ablUnusedFeeAmt+ablMonitoringFee+ablClosingFeeAmt});
+  if(useRev) stackItems.push({name:'Revolver/LOC', avail:revFacility, cost:revTotalCost, rate:revEffCost, color:'#6d8fc9', debtService: revTotalCost});
+  if(useFact) stackItems.push({name:'Factoring', avail:factAvail, cost:factTotalCost, rate:factOverallEffCost, color:'var(--secondary)', debtService: factTotalCost});
+  if(useEq) stackItems.push({name:'Equipment Fin.', avail:eqLoanAmt, cost:eqTotalCost, rate:eqEffCost, color:'var(--tertiary)', debtService: eqAmort.annualDebtService});
+  if(useTL) stackItems.push({name:'Term Loan', avail:tlLoanAmt, cost:tlAmort.yr1Interest, rate:tlEffCost, color:'var(--navy)', debtService: tlAmort.annualDebtService});
+  if(useCRE) stackItems.push({name:'CRE Loan', avail:creSizedAmt, cost:creTotalCostYr1, rate:creEffCost, color:'#0a6e4a', debtService: creAmort.annualDebtService});
+
+  var totalAvail = stackItems.reduce(function(s,i){return s+i.avail;},0);
+  var totalCost = stackItems.reduce(function(s,i){return s+i.cost;},0);
+  var totalDebtService = stackItems.reduce(function(s,i){return s+i.debtService;},0);
+  var blendedCost = totalAvail>0 ? (totalCost/totalAvail)*100 : 0;
+  var aggLeverage = ebitda>0 ? totalAvail/ebitda : 0;
+  var stackDSCR = totalDebtService>0 ? ebitda/totalDebtService : 0;
+
+  $('stackTotalAvail').textContent = fmtUSD(totalAvail);
+  $('stackBlendedCost').textContent = fmtPct(blendedCost,2);
+  $('stackLeverage').textContent = aggLeverage.toFixed(2)+'x';
+  $('stackDSCR').textContent = stackDSCR>0 ? stackDSCR.toFixed(2)+'x' : '–';
+
+  var flagsHtml='';
+  if(aggLeverage>4.5) flagsHtml += '<span class="flag bad">Aggregate leverage above 4.5x EBITDA — structuring risk</span> ';
+  else if(aggLeverage>3.5) flagsHtml += '<span class="flag warn">Aggregate leverage approaching typical middle-market ceiling</span> ';
+  else flagsHtml += '<span class="flag ok">Aggregate leverage within typical range</span> ';
+  if(stackDSCR>0){
+    if(stackDSCR<1.25) flagsHtml += '<span class="flag bad">Stack DSCR below 1.25x — likely covenant issue</span>';
+    else flagsHtml += '<span class="flag ok">Stack DSCR above 1.25x</span>';
+  }
+  $('stackFlags').innerHTML = flagsHtml;
+
+  barChart('stackBarChart', stackItems.map(function(i){return {name:i.name, value:i.avail, display:fmtUSD(i.avail), color:i.color};}));
+  var stackRows='';
+  stackItems.forEach(function(i){
+    stackRows += '<tr><td>'+i.name+'</td><td class="num">'+fmtUSD(i.avail)+'</td><td class="num">'+fmtUSD(i.cost)+'</td><td class="num">'+fmtPct(i.rate,2)+'</td></tr>';
+  });
+  if(stackItems.length===0) stackRows = '<tr><td colspan="4" style="color:var(--muted);">Select at least one instrument above.</td></tr>';
+  $('stackTableBody').innerHTML = stackRows;
+
+  updateSensitivity();
+}
+
+document.querySelectorAll('input').forEach(function(el){
+  el.addEventListener('input', update);
+  el.addEventListener('change', update);
+});
+document.querySelectorAll('select').forEach(function(el){
+  el.addEventListener('change', update);
+});
+
+update();
+
+// ============ Auth gate, prefill from URL, and scenario saving ============
+(function(){
+  var SUPABASE_URL = 'https://pdqywwxyibnapeytoalk.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_gAk4DGF0YlBxFQkcO92reQ_cb9H91lQ';
+  var REST = SUPABASE_URL + '/rest/v1';
+  var AUTH = SUPABASE_URL + '/auth/v1';
+  var session = null;
+
+  function $(id){ return document.getElementById(id); }
+  function sbHeaders(extra){
+    var h = { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' };
+    if(session && session.access_token){ h['Authorization'] = 'Bearer ' + session.access_token; }
+    return Object.assign(h, extra||{});
+  }
+  async function authSignIn(email, password){
+    var res = await fetch(AUTH+'/token?grant_type=password', { method:'POST', headers:{ 'apikey':SUPABASE_KEY, 'Content-Type':'application/json' }, body: JSON.stringify({ email:email, password:password }) });
+    var data = await res.json();
+    if(!res.ok) throw new Error(data.error_description || data.msg || 'Incorrect email or password');
+    return data;
+  }
+  async function authRefresh(refreshToken){
+    var res = await fetch(AUTH+'/token?grant_type=refresh_token', { method:'POST', headers:{ 'apikey':SUPABASE_KEY, 'Content-Type':'application/json' }, body: JSON.stringify({ refresh_token:refreshToken }) });
+    var data = await res.json();
+    if(!res.ok) throw new Error('refresh failed');
+    return data;
+  }
+  function saveSession(data){
+    session = { access_token:data.access_token, refresh_token:data.refresh_token, expires_at: Date.now() + (data.expires_in||3600)*1000, email: data.user && data.user.email };
+    try{ localStorage.setItem('cobalt_session', JSON.stringify(session)); }catch(e){}
+  }
+  function loadStoredSession(){
+    try{ var raw = localStorage.getItem('cobalt_session'); if(raw) session = JSON.parse(raw); }catch(e){ session = null; }
+  }
+  async function ensureValidSession(){
+    if(!session) return false;
+    if(Date.now() < session.expires_at - 60000) return true;
+    try{ saveSession(await authRefresh(session.refresh_token)); return true; }
+    catch(e){ session = null; try{ localStorage.removeItem('cobalt_session'); }catch(e2){} return false; }
+  }
+
+  function showAuthErr(msg){ var el=$('authErr'); el.textContent=msg; el.classList.add('show'); }
+  $('authSubmit').addEventListener('click', async function(){
+    var email = $('authEmail').value.trim();
+    var password = $('authPassword').value;
+    if(!email || !password){ showAuthErr('Enter an email and password.'); return; }
+    this.disabled = true;
+    try{ saveSession(await authSignIn(email, password)); enterApp(); }
+    catch(e){ showAuthErr(e.message || 'Incorrect email or password'); }
+    this.disabled = false;
+  });
+
+  function enterApp(){
+    $('authGate').style.display = 'none';
+    $('mainApp').style.display = 'block';
+    applyUrlPrefill();
+  }
+
+  $('toolSwitcher').addEventListener('change', function(){
+    if(this.value) window.location.href = this.value;
+  });
+
+  // ---------- prefill from URL params ----------
+  var linkedProspectId = null, linkedDealId = null, linkedName = null;
+  function applyUrlPrefill(){
+    var params = new URLSearchParams(window.location.search);
+    linkedProspectId = params.get('prospect_id');
+    linkedDealId = params.get('deal_id');
+    linkedName = params.get('name');
+    var fieldMap = { propertyValue:'propertyValue', ebitda:'ebitda' };
+    Object.keys(fieldMap).forEach(function(param){
+      var val = params.get(param);
+      var el = $(fieldMap[param]);
+      if(val!=null && el){ el.value = val; }
+    });
+    if(linkedName){
+      $('linkedTag').style.display = 'inline-block';
+      $('linkedTag').textContent = '🔗 ' + linkedName;
+      var pf = $('preparedFor');
+      if(pf && !pf.value) pf.value = linkedName;
+    }
+    if(typeof update === 'function') update();
+  }
+
+  // ---------- save scenario (captures whichever instrument tab is active) ----------
+  var INSTRUMENT_RESULTS = {
+    abl: { name:'ABL', amount:'ablNetAvail', cost:'ablEffCost' },
+    revolver: { name:'Revolver / LOC', amount:'revFacility', cost:'revEffCost' },
+    factoring: { name:'Factoring', amount:'factAvail', cost:'factEffCost' },
+    equipment: { name:'Equipment Finance', amount:'eqLoanAmt', cost:'eqEffCost' },
+    term: { name:'Term Loan', amount:'tlLoanAmt', cost:'tlEffCost' },
+    cre: { name:'CRE Loan', amount:'creLoanAmt', cost:'creEffCost' },
+    stack: { name:'Capital Stack', amount:'stackTotalAvail', cost:'stackBlendedCost' }
+  };
+  function activeTabKey(){
+    var activeBtn = document.querySelector('.tab-btn.active');
+    return activeBtn ? activeBtn.getAttribute('data-tab') : 'abl';
+  }
+  $('saveScenarioBtn').addEventListener('click', async function(){
+    if(!session){ alert('Please sign in again to save.'); return; }
+    var tabKey = activeTabKey();
+    var meta = INSTRUMENT_RESULTS[tabKey] || INSTRUMENT_RESULTS.abl;
+    var amountEl = $(meta.amount), costEl = $(meta.cost);
+    var inputs = {};
+    document.querySelectorAll('input, select').forEach(function(el){ if(el.id) inputs[el.id] = el.value; });
+    var payload = {
+      id: 'debtcap:'+Date.now()+Math.random().toString(36).slice(2,7),
+      created_at: new Date().toISOString(),
+      created_by: session.email || 'Unknown',
+      prospect_id: linkedProspectId,
+      deal_id: linkedDealId,
+      instrument_type: meta.name,
+      sized_amount: amountEl ? parseFloat((amountEl.textContent||'').replace(/[^0-9.\-]/g,'')) || null : null,
+      effective_cost: costEl ? parseFloat((costEl.textContent||'').replace(/[^0-9.\-]/g,'')) || null : null,
+      full_inputs: inputs
+    };
+    try{
+      var res = await fetch(REST+'/debt_capacity_scenarios', {
+        method:'POST', headers: sbHeaders({ 'Prefer':'return=minimal' }), body: JSON.stringify([payload])
+      });
+      if(!res.ok) throw new Error('save failed');
+      var btn = $('saveScenarioBtn');
+      var orig = btn.textContent;
+      btn.textContent = 'Saved ✓';
+      setTimeout(function(){ btn.textContent = orig; }, 2000);
+    }catch(e){
+      alert('Could not save — check your connection and try again.');
+    }
+  });
+
+  (async function init(){
+    loadStoredSession();
+    var ok = await ensureValidSession();
+    if(ok){ enterApp(); }
+    else { $('authGate').style.display = 'flex'; $('mainApp').style.display = 'none'; }
+  })();
+})();
+</script>
+</body>
+</html>
